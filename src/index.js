@@ -9,11 +9,13 @@ import { Login } from './components/Login';
 import { Register } from './components/Register';
 import { Home } from './components/Home';
 import { Auth } from './components/Auth';
+import { Chat } from './components/Chat';
 
 const Tabs = createBottomTabNavigator();
 const TabsScreen = () => (
   <Tabs.Navigator>
     <Tabs.Screen name="Home" component={Home} />
+		<Tabs.Screen name="Chat" component={Chat} />
   </Tabs.Navigator>
 );
 
