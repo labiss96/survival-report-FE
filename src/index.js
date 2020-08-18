@@ -10,12 +10,14 @@ import { Register } from './components/Register';
 import { Home } from './components/Home';
 import { Auth } from './components/Auth';
 import { Chat } from './components/Chat';
+import { Survivor } from './components/Survivor';
 
 const Tabs = createBottomTabNavigator();
 const TabsScreen = () => (
   <Tabs.Navigator>
-    <Tabs.Screen name="Home" component={Home} />
-		<Tabs.Screen name="Chat" component={Chat} />
+    {/* <Tabs.Screen name="Home" component={Home} /> */}
+	<Tabs.Screen name="Chat" component={Chat} />
+	<Tabs.Screen name="Survivor" component={Survivor} />
   </Tabs.Navigator>
 );
 
@@ -40,13 +42,32 @@ const AuthStackScreen = () => (
 	</AuthStack.Navigator>
 );
 
+const ContentStack = createStackNavigator();
+const ContentStackScreen = ({ isReported }) => (
+	<ContentStack.Navigator headerMode='none'>
+		{isReported ? (
+			<ContentStack.Screen
+				name="Tabs"
+				component={TabsScreen}
+				options={{ animationEnabled: false }}
+			/>
+		):(
+			<ContentStack.Screen
+				name="Report"
+				component={Home}
+				options={{ title: "Report" }}
+			/>
+		)}
+	</ContentStack.Navigator>
+);
+
 const RootStack = createStackNavigator();
 const RootStackScreen = ({ userToken }) => (
 	<RootStack.Navigator headerMode="none">
 		{userToken ? (
 			<RootStack.Screen
 				name="App"
-				component={TabsScreen}
+				component={ContentStackScreen}
 				options={{
 					animationEnabled: false
 				}}

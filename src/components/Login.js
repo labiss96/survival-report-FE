@@ -17,8 +17,8 @@ const handlingLogin = async (email, pw) => {
     await onLogin({
         email : {email},
         password: {pw}
-    }).then(result => alert(result))
-    .catch(err => console.log(err));
+    }).then(result => {console.log(err); alert(result);})
+    .catch(err => {console.log(err); alert(err)});
 }
 
 export const Login = ({ navigation }) => {
