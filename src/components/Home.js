@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Button } from "react-native";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { AuthContext } from "../context";
@@ -12,6 +12,40 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    titleArea: {
+        width: '100%',
+        paddingTop: wp('20%'),
+        paddingBottom: wp('20%'),
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: wp('8%'),
+    },
+    formArea: {
+        width: '100%',
+        paddingBottom: wp('10%'),
+    },
+    textForm: {
+        borderWidth: 0.5,
+        borderColor: '#888',
+        width: '100%',
+        height: hp('5%'),
+        paddingLeft: 5,
+        paddingRight: 5,
+        marginBottom: 10,
+        borderRadius: 5,
+    },
+    button: {
+        backgroundColor: "#46c3ad",
+        width: "100%",
+        height: hp('20%'),
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius:30,
+    },
+    buttonTitle: {
+        color: 'white',
+    }
 });
 
 const ScreenContainer = ({ children }) => (
@@ -19,16 +53,28 @@ const ScreenContainer = ({ children }) => (
 );
 
 export const Home = ({ navigation }) => {
-    // const { signIn } = React.useContext(AuthContext);
+    const [comment, setComment] = useState('');
+    
     const { signOut } = React.useContext(AuthContext);
     return (
         <ScreenContainer>
-            <View>
-                <Text>
-                    Main Screen!
-                </Text>
+            <View style={styles.titleArea}>
+                <Text style={styles.title}>생 존 신 고</Text>
             </View>
-            <Button title="생존신고!" onPress={() => alert('Fuck')} />
+
+            <View style={styles.formArea}>
+                <TextInput
+                    style={styles.textForm}
+                    placeholder={'생존 코멘트를 남겨보세요!'} 
+                    onChangeText = {text => setComment(text)}
+                    value = {comment} />
+            </View>
+            
+            <TouchableOpacity
+                style={styles.button}
+                onPress={() => alert('Fuck!')}>
+                <Text style={styles.buttonTitle}>생존신고!</Text>
+            </TouchableOpacity>
             <Button title="Sign Out" onPress={() => signOut()} />
         </ScreenContainer>
     );
