@@ -1,8 +1,66 @@
-import React from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Button } from "react-native";
+import React , {useState}from "react";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 import { AuthContext } from "../context";
+import { onLogin } from '../api/authAPI';
+
+const ScreenContainer = ({ children }) => (
+    <View style={styles.container}>{children}</View>
+);
+
+const handlingLogin = async (email, pw) => {
+    console.log('run authlogin');
+    console.log(`email : ${email}`);
+    console.log(`pw : ${pw}`);
+
+    await onLogin({
+        email : {email},
+        password: {pw}
+    }).then(result => alert(result))
+    .catch(err => console.log(err));
+}
+
+export const Login = ({ navigation }) => {
+    // const { signIn } = React.useContext(AuthContext);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    return (
+        <ScreenContainer>
+            <View style={styles.titleArea}>
+                <Text style={styles.title}>Suvival Report</Text>
+            </View>
+            <View style={styles.formArea}>
+                <TextInput
+                    style={styles.textForm}
+                    placeholder={"E-mail"} 
+                    onChangeText = {text => setEmail(text)}
+                    value = {email} />
+                <TextInput
+                    style={styles.textForm}
+                    placeholder={"Password"}
+                    onChangeText = {text => setPassword(text)}
+                    value = {password} />
+            </View>
+            <View style={styles.buttonArea}>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => handlingLogin(email, password)}>
+                    <Text style={styles.buttonTitle}>Login</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => navigation.push("Register")}>
+                    <Text style={styles.buttonTitle}>
+                        Register
+                    </Text>
+                </TouchableOpacity>
+            </View>
+        </ScreenContainer>
+    );
+};
+
 
 const styles = StyleSheet.create({
     container: {
@@ -50,41 +108,3 @@ const styles = StyleSheet.create({
         color: 'white',
     },
 });
-
-const ScreenContainer = ({ children }) => (
-    <View style={styles.container}>{children}</View>
-);
-
-export const Login = ({ navigation }) => {
-    // const { signIn } = React.useContext(AuthContext);
-
-    return (
-        <ScreenContainer>
-            <View style={styles.titleArea}>
-                <Text style={styles.title}>Suvival Report</Text>
-            </View>
-            <View style={styles.formArea}>
-                <TextInput
-                    style={styles.textForm}
-                    placeholder={"E-mail"} />
-                <TextInput
-                    style={styles.textForm}
-                    placeholder={"Password"} />
-            </View>
-            <View style={styles.buttonArea}>
-                <TouchableOpacity
-                    style={styles.button}>
-                    <Text style={styles.buttonTitle}>Login</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => navigation.push("Register")}>
-                    <Text style={styles.buttonTitle}>
-                        Register
-                    </Text>
-                </TouchableOpacity>
-            </View>
-        </ScreenContainer>
-    );
-};
-

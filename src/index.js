@@ -76,7 +76,8 @@ export default () => {
       },
       signOut: () => {
         setUserToken(null);
-      }
+	  },
+	  
     };
   }, []);
 	

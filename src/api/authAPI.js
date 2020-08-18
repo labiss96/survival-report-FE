@@ -6,7 +6,7 @@ axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
 const onLogin = (data) => {
 	console.log("run login API.");
-	return axios.post("accounts/auth/login/", data); //date : {username, password}
+	return axios.post("accounts/rest-auth/login/", data); //date : {username, password}
 }
 
 const tokenConfig = () => {
