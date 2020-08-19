@@ -2,29 +2,40 @@ import React , {useState}from "react";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
-import { AuthContext } from "../context";
-import { onLogin } from '../api/authAPI';
+import { AuthContext } from "../../context";
+import { onLogin } from '../../api/authAPI';
 
 const ScreenContainer = ({ children }) => (
     <View style={styles.container}>{children}</View>
 );
 
-const handlingLogin = async (email, pw) => {
-    console.log('run authlogin');
-    console.log(`email : ${email}`);
-    console.log(`pw : ${pw}`);
-
-    await onLogin({
-        email : {email},
-        password: {pw}
-    }).then(result => {console.log(err); alert(result);})
-    .catch(err => {console.log(err); alert(err)});
-}
-
 export const Login = ({ navigation }) => {
-    // const { signIn } = React.useContext(AuthContext);
+    const { signIn } = React.useContext(AuthContext);
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const handlingLogin = async () => {    
+        console.log(`email : ${email}`);
+        console.log(`pw : ${password}`);
+    
+        await onLogin({
+            email : email,
+            password: password
+        }).then(result => {
+            console.log(result);
+            alert(result.data);
+            if(result.status === 200 ) {
+                signIn(result.data.key);
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            alert(err);
+            return false;
+        }
+        );
+    }
 
     return (
         <ScreenContainer>
@@ -46,7 +57,7 @@ export const Login = ({ navigation }) => {
             <View style={styles.buttonArea}>
                 <TouchableOpacity
                     style={styles.button}
-                    onPress={() => handlingLogin(email, password)}>
+                    onPress={() => handlingLogin() }>
                     <Text style={styles.buttonTitle}>Login</Text>
                 </TouchableOpacity>
                 <TouchableOpacity

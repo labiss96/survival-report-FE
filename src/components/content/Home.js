@@ -1,7 +1,7 @@
-import React, {useState} from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Button } from "react-native";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { AuthContext } from "../context";
+import { AuthContext } from "../../context";
 
 const styles = StyleSheet.create({
     container: {
@@ -53,9 +53,16 @@ const ScreenContainer = ({ children }) => (
 );
 
 export const Home = ({ navigation }) => {
-    const [comment, setComment] = useState('');
     
-    const { signOut } = React.useContext(AuthContext);
+    const { signOut, getReportFlag, onReport } = useContext(AuthContext);
+
+    const [comment, setComment] = useState('');
+
+    useEffect(() => {
+        console.log('run useEffect : Home');
+        console.log(getReportFlag);
+	})
+
     return (
         <ScreenContainer>
             <View style={styles.titleArea}>
@@ -72,7 +79,11 @@ export const Home = ({ navigation }) => {
             
             <TouchableOpacity
                 style={styles.button}
-                onPress={() => alert('Fuck!')}>
+                onPress={() => { 
+                    alert('생존신고 완료!');
+                    onReport();
+                    } 
+                }>
                 <Text style={styles.buttonTitle}>생존신고!</Text>
             </TouchableOpacity>
             <Button title="Sign Out" onPress={() => signOut()} />

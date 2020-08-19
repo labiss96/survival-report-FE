@@ -1,24 +1,26 @@
-import React from "react";
+import React, {useState, useEffect, useContext } from "react";
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import { AuthContext } from "./context";
 
-import { Login } from './components/Login';
-import { Register } from './components/Register';
-import { Home } from './components/Home';
-import { Auth } from './components/Auth';
+import { Login } from './components/auth/Login';
+import { Register } from './components/auth/Register';
+import { Auth } from './components/auth/Auth';
+
+import { Home } from './components/content/Home';
+import { Survivor } from './components/content/Survivor';
+
 import { Chat } from './components/Chat';
-import { Survivor } from './components/Survivor';
+
 
 const Tabs = createBottomTabNavigator();
 const TabsScreen = () => (
-  <Tabs.Navigator>
-    {/* <Tabs.Screen name="Home" component={Home} /> */}
-	<Tabs.Screen name="Chat" component={Chat} />
-	<Tabs.Screen name="Survivor" component={Survivor} />
-  </Tabs.Navigator>
+	<Tabs.Navigator>
+		<Tabs.Screen name="Chat" component={Chat} />
+		<Tabs.Screen name="Survivor" component={Survivor} />
+	</Tabs.Navigator>
 );
 
 const AuthStack = createStackNavigator();
@@ -42,70 +44,76 @@ const AuthStackScreen = () => (
 	</AuthStack.Navigator>
 );
 
-const ContentStack = createStackNavigator();
-const ContentStackScreen = ({ isReported }) => (
-	<ContentStack.Navigator headerMode='none'>
-		{isReported ? (
-			<ContentStack.Screen
-				name="Tabs"
-				component={TabsScreen}
-				options={{ animationEnabled: false }}
-			/>
-		):(
-			<ContentStack.Screen
-				name="Report"
-				component={Home}
-				options={{ title: "Report" }}
-			/>
-		)}
-	</ContentStack.Navigator>
-);
-
 const RootStack = createStackNavigator();
-const RootStackScreen = ({ userToken }) => (
+const RootStackScreen = ({ userToken, reportFlag }) => {
+	useEffect(() => {
+		console.log('run useEffect : RootStack');
+		console.log( 'userToken : ',userToken);
+		console.log( 'report Flag : ', reportFlag);
+	})
+	return (
 	<RootStack.Navigator headerMode="none">
 		{userToken ? (
+			<>
+				{
+				reportFlag ? (
+					<RootStack.Screen
+					name="Tabs"
+					component={TabsScreen}
+					options={{ animationEnabled: false }}
+					/>
+				):(
+					<RootStack.Screen
+					name="Home"
+					component={Home}
+					options={{ title: "Report" }}
+					/>
+				)}
+			</>
+		) : (
 			<RootStack.Screen
-				name="App"
-				component={ContentStackScreen}
+				name="Auth"
+				component={AuthStackScreen}
 				options={{
 					animationEnabled: false
 				}}
 			/>
-		) : (
-				<RootStack.Screen
-					name="Auth"
-					component={AuthStackScreen}
-					options={{
-						animationEnabled: false
-					}}
-				/>
-			)}
+		)}
 	</RootStack.Navigator>
-);
+);}
 
 export default () => {
-	const [userToken, setUserToken] = React.useState(null);
+	const [userToken, setUserToken] = useState(null);
+	const [reportFlag, setReportFlag] = useState(false);
+
+	useEffect(() => {
+		console.log('run useEffect : Index');
+	})
 
 	const authContext = React.useMemo(() => {
-    return {
-      signIn: () => {
-        setUserToken("asdf");
-      },
-      signUp: () => {
-        setUserToken("asdf");
-      },
-      signOut: () => {
-        setUserToken(null);
-	  },
-	  
-    };
-  }, []);
-	
+		return {
+			signIn: (token) => {
+				console.log('run sign in!');
+				setUserToken(token);
+			},
+			signUp: () => {
+				setUserToken('token');
+			},
+			signOut: () => {
+				setUserToken(null);
+			},
+			onReport: () => {
+				console.log('run onReport!');
+				setReportFlag(true);
+			},
+			getReportFlag : reportFlag
+		};
+	}, []);
+
 	return (
 		<AuthContext.Provider value={authContext}>
 			<NavigationContainer>
-				<RootStackScreen userToken={userToken} />
+				<RootStackScreen userToken={userToken} reportFlag={reportFlag}/>
 			</NavigationContainer>
 		</AuthContext.Provider>
 	);
