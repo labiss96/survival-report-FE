@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-nativ
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 import { AuthContext } from "../../context";
-import { onLogin } from '../../api/authAPI';
 
 const ScreenContainer = ({ children }) => (
     <View style={styles.container}>{children}</View>
@@ -15,26 +14,11 @@ export const Login = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handlingLogin = async () => {    
+    const handlingLogin = () => {    
         console.log(`email : ${email}`);
         console.log(`pw : ${password}`);
-    
-        await onLogin({
-            email : email,
-            password: password
-        }).then(result => {
-            console.log(result);
-            alert(result.data);
-            if(result.status === 200 ) {
-                signIn(result.data.key);
-            }
-        })
-        .catch(err => {
-            console.log(err);
-            alert(err);
-            return false;
-        }
-        );
+
+        signIn(email, password);
     }
 
     return (
@@ -46,13 +30,11 @@ export const Login = ({ navigation }) => {
                 <TextInput
                     style={styles.textForm}
                     placeholder={"E-mail"} 
-                    onChangeText = {text => setEmail(text)}
-                    value = {email} />
+                    onChangeText = {text => setEmail(text)} />
                 <TextInput
                     style={styles.textForm}
                     placeholder={"Password"}
-                    onChangeText = {text => setPassword(text)}
-                    value = {password} />
+                    onChangeText = {text => setPassword(text)} />
             </View>
             <View style={styles.buttonArea}>
                 <TouchableOpacity

@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Button } from "react-native";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+
+import { onRegister } from '../../api/authAPI';
 
 const styles = StyleSheet.create({
     container: {
@@ -54,6 +56,37 @@ const styles = StyleSheet.create({
 
 export const Register = ({ navigation }) => {
     // const { signIn } = React.useContext(AuthContext);
+    const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
+    const [password, setPassword] = useState('');
+    const [password2, setPassword2] = useState('');
+
+    const registerHandling = async () => {
+        if(email !== '' && password !== '' && name !== '') {
+            alert('good');
+            //register API 
+            const data = {
+                email: email,
+                name: name,
+                password: password
+            }
+            
+            let result = null;
+            try {
+                result = await onRegister(data);
+            } catch(e) {
+                result = e;
+            }
+            
+            console.log(result);
+
+            navigation.push('Auth');
+        } else {
+            alert('정보를 모두 입력해주세요');
+        }
+    }
+    // navigation.push("Auth")
+
     return (
       <ScreenContainer>
         <View style={styles.titleArea}>
@@ -62,18 +95,25 @@ export const Register = ({ navigation }) => {
                 <View style={styles.formArea}>
                     <TextInput 
                         style={styles.textForm} 
-                        placeholder={"E-mail"}/>
+                        placeholder={"E-mail"}
+                        onChangeText = {text => setEmail(text)} />
                     <TextInput 
                         style={styles.textForm} 
-                        placeholder={"Name"}/>
+                        placeholder={"Name"}
+                        onChangeText = {text => setName(text)} />
                     <TextInput 
                         style={styles.textForm} 
-                        placeholder={"Password"}/>
+                        placeholder={"Password"}
+                        onChangeText = {text => setPassword(text)} />
+                    <TextInput 
+                        style={styles.textForm} 
+                        placeholder={"confirm Password"}
+                        onChangeText = {text => setPassword2(text)} />
                 </View>
                 <View style={styles.buttonArea}>
                     <TouchableOpacity 
                         style={styles.button}
-                        onPress={() => navigation.push("Auth")}>
+                        onPress={() => registerHandling()}>
                         <Text style={styles.buttonTitle}>Signup</Text>
                     </TouchableOpacity>
                 </View>
