@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, Button } from "rea
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { AuthContext } from "../../context";
 
+import { onCreate } from '../../api/survivorAPI';
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -61,7 +63,15 @@ export const Home = ({ navigation }) => {
     useEffect(() => {
         console.log('run useEffect : Home');
         console.log(getReportFlag);
-	})
+    })
+    
+    const reportHandling = async () => {
+        await onCreate({email: 'cxz9080@gmail.com'}).then(result => {
+            console.log(result);
+            alert('생존신고 완료!');
+            onReport();
+        }).catch(err => console.log(err))
+    }
 
     return (
         <ScreenContainer>
@@ -80,8 +90,7 @@ export const Home = ({ navigation }) => {
             <TouchableOpacity
                 style={styles.button}
                 onPress={() => { 
-                    alert('생존신고 완료!');
-                    onReport();
+                    reportHandling();
                     } 
                 }>
                 <Text style={styles.buttonTitle}>생존신고!</Text>
