@@ -19,6 +19,7 @@ import { Survivor } from './components/content/Survivor';
 
 import { Chat } from './components/Chat';
 
+import Progress from './components/Progress';
 
 const Tabs = createBottomTabNavigator();
 const TabsScreen = () => (
@@ -71,7 +72,7 @@ const RootStackScreen = ({ userToken, reportFlag }) => {
 					<RootStack.Screen
 					name="Home"
 					component={Home}
-					options={{ title: "Report" }}
+          options={{ title: "Report" }}
 					/>
 				)}
 			</>
@@ -81,7 +82,8 @@ const RootStackScreen = ({ userToken, reportFlag }) => {
 				component={AuthStackScreen}
 				options={{
 					animationEnabled: false
-				}}
+        }}
+        path='auth'
 			/>
 		)}
 	</RootStack.Navigator>
@@ -93,8 +95,7 @@ export default () => {
 
 	const initialLoginState = {
 		isLoading: true,
-		email: null,
-		userToken: null,
+    userToken: null,
 	};
 
 	const loginReducer = (prevState, action) => {
@@ -102,60 +103,40 @@ export default () => {
 			case 'RETRIEVE_TOKEN':
 				return {
 					... prevState,
-					userToken: action.token,
+          userToken: action.token,
 					isLoading: false,
 				};
 			case 'LOGIN':
 				return {
 					... prevState,
-					email: action.email,
-					userToken: action.token,
+          userToken: action.token,
 					isLoading: false,
 				}
 			case 'LOGOUT':
 				return {
 					... prevState,
-					email: null,
-					userToken: null,
-					isLoading: false,
-				}
-			case 'REGISTER':
-				return {
-					... prevState,
-					email: action.email,
-					userToken: action.token,
+          userToken: null,
 					isLoading: false,
 				}
 		}
 	}
-	const [ loginState, dispatch ] = useReducer(loginReducer, initialLoginState);
+  const [ loginState, dispatch ] = useReducer(loginReducer, initialLoginState);
 
 	const authContext = React.useMemo(() => {
 		return {
-			signIn: async (email, password) => {
-
-				//API 통신
-        await onLogin({
-          email : email,
-          password: password
-        }).then( async (result) => {
-            console.log(result);
-            alert('환영합니다!');
-            try {
-              await AsyncStorage.setItem('userToken', result.data.key);
-            } catch(e) {
-              console.log(e);
-            }
-            dispatch({ type: 'LOGIN', email: email, token: result.data.key });
-        })
-        .catch(err => {
-            console.log(err);
-            alert('아이디 또는 비밀번호가 틀립니다!');
-        });
-			},
+			signIn: async (token) => {
+				try {
+          await AsyncStorage.setItem('userToken', token);
+        } catch(e) {
+          console.log(e);
+        }
+        dispatch({ type: 'LOGIN', token: token });
+      },
+      
 			signUp: () => {
 				setUserToken('token');
-			},
+      },
+      
 			signOut: async () => {
         // setUserToken(null);
         try {
@@ -163,9 +144,9 @@ export default () => {
         } catch(e) {
           console.log(e);
         }
-
 				dispatch({ type: 'LOGOUT' });
-			},
+      },
+      
 			onReport: () => {
 				console.log('run onReport!');
 				setReportFlag(true);
@@ -178,10 +159,8 @@ export default () => {
 		console.log('run useEffect : Index');
 		setTimeout( async () => {
       let userToken = null;
-
       try {
         userToken = await AsyncStorage.getItem('userToken');
-        console.log(`스토리지에 저장된 유저토큰 : ${userToken}`);
       } catch(e) {
         console.log(e);
       }
@@ -193,9 +172,7 @@ export default () => {
 
 	if( loginState.isLoading ) {
 		return (
-			<View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-				<ActivityIndicator size="large"/>
-			</View>
+			<Progress />
 		);
 	}
 	return (

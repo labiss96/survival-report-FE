@@ -56,7 +56,6 @@ const ScreenContainer = ({ children }) => (
 );
 
 export const Auth = ({ navigation }) => {
-	const { signIn } = React.useContext(AuthContext);
 
 	return (
 		<ScreenContainer>
@@ -71,15 +70,15 @@ export const Auth = ({ navigation }) => {
 			<View style={styles.buttonArea}>
 				<TouchableOpacity
 					style={styles.button}
-					onPress={() => { alert('해당 이메일로 인증코드를 발송하였습니다!'); }}>
+					onPress={() => { alert('해당 이메일로 인증코드를 재 발송하였습니다!'); }}>
 					<Text style={styles.buttonTitle}>인증코드 재발송</Text>
 				</TouchableOpacity>
 			</View>
 			<View style={styles.buttonArea}>
 				<TouchableOpacity
 					style={styles.button}
-					onPress={() => { signIn() }}>
-					<Text style={styles.buttonTitle}>인증완료</Text>
+					onPress={() => { navigation.navigate('Login') }}>
+					<Text style={styles.buttonTitle}>로그인</Text>
 				</TouchableOpacity>
 			</View>
 		</ScreenContainer>

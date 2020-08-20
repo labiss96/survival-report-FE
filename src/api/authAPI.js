@@ -38,7 +38,7 @@ const onLogin = (data) => {
   //   password: "cakecake"
   // }
   console.log(data);
-  return axios.post("account/sign-in/", JSON.stringify(data), tokenConfig()); //date : {email, password}
+  return axios.post("account/sign-in", JSON.stringify(data), tokenConfig()); //date : {email, password}
 
 }
 

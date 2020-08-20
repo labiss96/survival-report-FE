@@ -4,6 +4,8 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 
 import { onRegister } from '../../api/authAPI';
 
+import Progress from '../Progress';
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -60,27 +62,30 @@ export const Register = ({ navigation }) => {
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [password2, setPassword2] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const registerHandling = async () => {
+        
         if(email !== '' && password !== '' && name !== '') {
-            alert('good');
+            setIsLoading(true);
             //register API 
             const data = {
                 email: email,
                 name: name,
                 password: password
             }
-            
-            let result = null;
-            try {
-                result = await onRegister(data);
-            } catch(e) {
-                result = e;
-            }
-            
-            console.log(result);
 
-            navigation.push('Auth');
+            await onRegister(data).then(result => {
+                console.log(result);
+                alert('계정이 생성되었습니다! 메일로 이동하여 인증을 완료해주세요');
+                navigation.push('Auth');
+                setIsLoading(false);
+            }).catch(err => {
+                console.log(err);
+                setIsLoading(false);
+            });
+
+            
         } else {
             alert('정보를 모두 입력해주세요');
         }
@@ -111,12 +116,15 @@ export const Register = ({ navigation }) => {
                         onChangeText = {text => setPassword2(text)} />
                 </View>
                 <View style={styles.buttonArea}>
-                    <TouchableOpacity 
+                    {isLoading ? (<Progress/>):(
+                        <TouchableOpacity 
                         style={styles.button}
                         onPress={() => registerHandling()}>
-                        <Text style={styles.buttonTitle}>Signup</Text>
-                    </TouchableOpacity>
+                            <Text style={styles.buttonTitle}>Signup</Text>
+                        </TouchableOpacity>
+                    )}
                 </View>
+                
       </ScreenContainer>
     );
   };
