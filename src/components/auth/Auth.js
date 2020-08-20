@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Button } from "react-native";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
-import { AuthContext } from "../context";
+import { AuthContext } from "../../context";
 
 const styles = StyleSheet.create({
 	container: {
@@ -56,45 +56,31 @@ const ScreenContainer = ({ children }) => (
 );
 
 export const Auth = ({ navigation }) => {
-	const { signIn } = React.useContext(AuthContext);
-	let [sent, setSent] = useState(false);
 
 	return (
 		<ScreenContainer>
 			<View style={styles.titleArea}>
 				<Text style={styles.title}>E-Mail 인증</Text>
+			</View>					
+			<View style={styles.formArea}>
+				<TextInput
+					style={styles.textForm}
+					value={"User@likelion.org"} />
 			</View>
-			{sent ? (
-				<>
-					<TextInput
-						style={styles.textForm}
-						placeholder={"인증코드 입력"} />
-
-					<View style={styles.buttonArea}>
-						<TouchableOpacity
-							style={styles.button}
-							onPress={() => signIn()}>
-							<Text style={styles.buttonTitle}>인증</Text>
-						</TouchableOpacity>
-					</View>
-				</>
-			) : (
-					<>
-						<View style={styles.formArea}>
-							<TextInput
-								style={styles.textForm}
-								value={"User@likelion.org"} />
-						</View>
-						<View style={styles.buttonArea}>
-							<TouchableOpacity
-								style={styles.button}
-								onPress={() => { setSent(true); alert('해당 이메일로 인증코드를 발송하였습니다!'); }}>
-								<Text style={styles.buttonTitle}>인증코드 발송</Text>
-							</TouchableOpacity>
-						</View>
-					</>
-				)}
-
+			<View style={styles.buttonArea}>
+				<TouchableOpacity
+					style={styles.button}
+					onPress={() => { alert('해당 이메일로 인증코드를 재 발송하였습니다!'); }}>
+					<Text style={styles.buttonTitle}>인증코드 재발송</Text>
+				</TouchableOpacity>
+			</View>
+			<View style={styles.buttonArea}>
+				<TouchableOpacity
+					style={styles.button}
+					onPress={() => { navigation.navigate('Login') }}>
+					<Text style={styles.buttonTitle}>로그인</Text>
+				</TouchableOpacity>
+			</View>
 		</ScreenContainer>
 	);
 };
