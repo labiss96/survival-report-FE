@@ -24,6 +24,19 @@ import { ChatDetail } from "./components/content/ChatDetail";
 
 import Progress from "./components/Progress";
 
+const SurvivorStack = createStackNavigator();
+const SurvivorStackScreen = () => (
+  <SurvivorStack.Navigator>
+    <SurvivorStack.Screen
+      name="SurvivorList"
+      component={Survivor}
+      options={{
+        title: "Survivor List",
+      }}
+    />
+  </SurvivorStack.Navigator>
+);
+
 const ChatStack = createStackNavigator();
 const ChatStackScreen = () => (
   <ChatStack.Navigator>
@@ -56,10 +69,15 @@ const ChatStackScreen = () => (
 
 const Tabs = createMaterialBottomTabNavigator();
 const TabsScreen = () => (
-  <Tabs.Navigator>
+  <Tabs.Navigator
+    initialRouteName="Survivor"
+    activeColor="#f0edf6"
+    inactiveColor="#3e2465"
+    barStyle={{ backgroundColor: "#46c3ad" }}
+  >
     <Tabs.Screen
       name="Survivor"
-      component={Survivor}
+      component={SurvivorStackScreen}
       options={{
         title: "Survivor List",
         tabBarLabel: "Survivors",
