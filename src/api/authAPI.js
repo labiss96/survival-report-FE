@@ -1,25 +1,24 @@
 import axios from "axios";
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from "@react-native-community/async-storage";
 
-axios.defaults.baseURL = "http://10.19.247.184:8000/";
+axios.defaults.baseURL = "http:/192.168.0.9:8000/";
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
 const tokenConfig = async () => {
-  
   let token = null;
   try {
-    token = await AsyncStorage.getItem('userToken');
-    console.log('token :', token);
-  } catch(e) {
+    token = await AsyncStorage.getItem("userToken");
+    console.log("token :", token);
+  } catch (e) {
     console.log(e);
   }
-	
+
   // Headers
   const config = {
     headers: {
-      "Content-Type": "application/json"
-    }
+      "Content-Type": "application/json",
+    },
   };
 
   // if (token) {
@@ -27,7 +26,7 @@ const tokenConfig = async () => {
   //   config.headers["Authorization"] = `${token}`;
   // }
   config.headers["Authorization"] = token;
-  
+
   return config;
 };
 
@@ -35,14 +34,11 @@ const onLogin = (data) => {
   console.log("run login API.");
   console.log(data);
   return axios.post("account/sign-in", JSON.stringify(data), tokenConfig()); //date : {email, password}
-
-}
+};
 
 const onRegister = (data) => {
-  console.log('run Register API');
-  return axios.post('account/sign-up', JSON.stringify(data));
-}
+  console.log("run Register API");
+  return axios.post("account/sign-up", JSON.stringify(data));
+};
 
-
-
-export { onLogin, onRegister, tokenConfig }
+export { onLogin, onRegister, tokenConfig };
