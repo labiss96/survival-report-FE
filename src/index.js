@@ -14,6 +14,7 @@ import { Auth } from "./components/auth/Auth";
 
 import { Home } from "./components/content/Home";
 import { Survivor } from "./components/content/Survivor";
+import { MyPage } from "./components/content/Mypage";
 
 import { Chat } from "./components/Chat";
 
@@ -26,8 +27,8 @@ const TabsScreen = () => (
       name="Survivor"
       component={Survivor}
       options={{
-        tabBarLabel: "Survivor",
-        tabBarIcon: ({ color }) => <Icon name="home" color={color} size={26} />,
+        tabBarLabel: "Survivors",
+        tabBarIcon: ({ color }) => <Icon name="hail" color={color} size={26} />,
       }}
     />
     <Tabs.Screen
@@ -36,6 +37,16 @@ const TabsScreen = () => (
       options={{
         tabBarLabel: "Chat",
         tabBarIcon: ({ color }) => <Icon name="chat" color={color} size={26} />,
+      }}
+    />
+    <Tabs.Screen
+      name="MyPage"
+      component={MyPage}
+      options={{
+        tabBarLabel: "My Page",
+        tabBarIcon: ({ color }) => (
+          <Icon name="account-circle" color={color} size={26} />
+        ),
       }}
     />
   </Tabs.Navigator>

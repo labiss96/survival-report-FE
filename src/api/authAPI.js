@@ -30,10 +30,11 @@ const tokenConfig = async () => {
   return config;
 };
 
-const onLogin = (data) => {
+const onLogin = async (data) => {
   console.log("run login API.");
   console.log(data);
-  return axios.post("account/sign-in", JSON.stringify(data), tokenConfig()); //date : {email, password}
+  const config = await tokenConfig();
+  return axios.post("account/sign-in", JSON.stringify(data), config); //date : {email, password}
 };
 
 const onRegister = (data) => {
@@ -41,4 +42,10 @@ const onRegister = (data) => {
   return axios.post("account/sign-up", JSON.stringify(data));
 };
 
-export { onLogin, onRegister, tokenConfig };
+const checkValidation = async () => {
+  console.log("run checkValidation API.");
+  const config = await tokenConfig();
+  return axios.get("account/validation", config);
+};
+
+export { tokenConfig, onLogin, onRegister, checkValidation };
