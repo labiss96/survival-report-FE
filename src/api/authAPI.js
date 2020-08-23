@@ -12,4 +12,9 @@ const checkValidation = () => {
   return callAPI("GET", "account/validation", null);
 };
 
-export { onLogin, onRegister, checkValidation };
+const sendAuthMail = (data) => {
+  console.log(data);
+  return callAPI("POST", "account/email", data);
+};
+
+export { onLogin, onRegister, checkValidation, sendAuthMail };

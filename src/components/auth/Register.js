@@ -80,11 +80,24 @@ export const Register = ({ navigation }) => {
         .then((result) => {
           console.log(result);
           alert("계정이 생성되었습니다! 메일로 이동하여 인증을 완료해주세요");
-          navigation.push("Auth");
+          navigation.push("Auth", { email: email });
           setIsLoading(false);
         })
         .catch((err) => {
-          console.log(err);
+          if (err.response) {
+            console.log("response");
+            alert(err.response.data.message);
+            console.log(err.response.data);
+            console.log(err.response.status);
+            console.log(err.response.headers);
+          } else if (err.request) {
+            console.log("request");
+            console.log(err.request);
+          } else {
+            console.log(err);
+          }
+          // console.log(error.config);
+
           setIsLoading(false);
         });
     } else {
