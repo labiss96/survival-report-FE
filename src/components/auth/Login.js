@@ -33,8 +33,33 @@ export const Login = ({ navigation }) => {
         signIn(result.data.token, result.data.userId);
       })
       .catch((err) => {
-        console.log(err);
-        alert("아이디 또는 비밀번호가 틀립니다!");
+        if (err.response) {
+          console.log("response err");
+          switch (err.response.status) {
+            case 400:
+              alert(err.response.data.message);
+              break;
+            case 401:
+              alert(err.response.data.message);
+              navigation.push("Auth");
+              break;
+            case 402:
+              alert(err.response.data.message);
+              break;
+            case 403:
+              alert(err.response.data.message);
+              break;
+            default:
+              alert(err.response.data);
+              break;
+          }
+        } else if (err.request) {
+          console.log("request");
+          console.log(err.request);
+        } else {
+          console.log(err);
+        }
+        console.log(error.config);
       });
   };
 

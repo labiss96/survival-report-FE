@@ -66,7 +66,8 @@ const ScreenContainer = ({ children }) => (
 );
 
 export const Auth = ({ navigation }) => {
-  const [email, setEmail] = useState("User@likelion.org");
+  //   const [email, setEmail] = useState("cxz9080@gmail.com");
+  const [email, setEmail] = useState("dskfldsl@mfkdsmf.fd");
 
   const handlingSendMail = async () => {
     await sendAuthMail({ email: email })
@@ -75,8 +76,19 @@ export const Auth = ({ navigation }) => {
         alert("해당 이메일로 인증코드를 재 발송하였습니다!");
       })
       .catch((err) => {
-        console.log(err);
-        alert("이메일 발송 중 문제가 발생하였습니다!");
+        if (err.response) {
+          console.log("response");
+          alert(err.response.data.message);
+          console.log(err.response.data);
+          console.log(err.response.status);
+          console.log(err.response.headers);
+        } else if (err.request) {
+          console.log("request");
+          console.log(err.request);
+        } else {
+          console.log(err);
+        }
+        console.log(error.config);
       });
   };
 

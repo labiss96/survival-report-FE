@@ -13,6 +13,7 @@ const checkValidation = () => {
 };
 
 const sendAuthMail = (data) => {
+  console.log(data);
   return callAPI("POST", "account/email", data);
 };
 
