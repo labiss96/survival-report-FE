@@ -9,8 +9,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
-    paddingLeft: wp("10%"),
-    paddingRight: wp("10%"),
+    paddingLeft: wp("5%"),
+    paddingRight: wp("5%"),
     justifyContent: "center",
     alignItems: "center",
   },

@@ -1,11 +1,6 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { TextInput, Button } from "react-native-paper";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -51,30 +46,35 @@ export const Login = ({ navigation }) => {
       <View style={styles.formArea}>
         <TextInput
           style={styles.textForm}
-          placeholder={"E-mail"}
+          label={"E-mail"}
           onChangeText={(text) => setEmail(text)}
           value={email}
         />
         <TextInput
           style={styles.textForm}
-          placeholder={"Password"}
+          label={"Password"}
           onChangeText={(text) => setPassword(text)}
           value={password}
         />
       </View>
       <View style={styles.buttonArea}>
-        <TouchableOpacity style={styles.button} onPress={() => handlingLogin()}>
-          <Text style={styles.buttonTitle}>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
+        <Button
           style={styles.button}
+          mode="contained"
+          onPress={() => handlingLogin()}
+        >
+          Login
+        </Button>
+        <Button
+          style={styles.button}
+          mode="contained"
           onPress={() => {
             navigation.push("Register");
             console.log("press register button!");
           }}
         >
-          <Text style={styles.buttonTitle}>Register!</Text>
-        </TouchableOpacity>
+          Register
+        </Button>
       </View>
     </ScreenContainer>
   );
@@ -83,7 +83,7 @@ export const Login = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    // backgroundColor: "white",
     paddingLeft: wp("10%"),
     paddingRight: wp("10%"),
     // justifyContent: 'center',
@@ -102,10 +102,7 @@ const styles = StyleSheet.create({
     paddingBottom: wp("10%"),
   },
   textForm: {
-    borderWidth: 0.5,
-    borderColor: "#888",
     width: "100%",
-    height: hp("5%"),
     paddingLeft: 5,
     paddingRight: 5,
     marginBottom: 10,
