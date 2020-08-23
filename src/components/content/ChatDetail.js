@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -11,6 +11,8 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+
+import { IconButton, Colors } from "react-native-paper";
 
 const styles = StyleSheet.create({
   container: {
@@ -27,11 +29,29 @@ const ScreenContainer = ({ children }) => (
   <View style={styles.container}>{children}</View>
 );
 
-export const ChatDetail = ({ navigation }) => {
+export const ChatDetail = ({ route, navigation }) => {
+  const { receiverId } = route.params;
+  useEffect(() => {
+    // navigation.setOptions({
+    //   headerLeft: () => (
+    //     <IconButton
+    //       icon="keyboard-backspace"
+    //       color={Colors.grey700}
+    //       size={20}
+    //       animated={true}
+    //       onPress={() =>
+    //         navigation.navigate("Chat", {
+    //           screen: "ChatList",
+    //         })
+    //       }
+    //     />
+    //   ),
+    // });
+  }, []);
   return (
     <ScreenContainer>
       <View>
-        <Text>Chat Detail Screen!</Text>
+        <Text>Chat Detail Screen! :: {receiverId}</Text>
       </View>
     </ScreenContainer>
   );

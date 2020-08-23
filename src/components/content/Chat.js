@@ -31,7 +31,16 @@ const ChatView = ({ name, description, id, navigation }) => (
     title={name}
     description={description}
     left={(props) => <List.Icon {...props} icon="account" />}
-    onPress={() => navigation.push("ChatDetail")}
+    onPress={() =>
+      navigation.navigate("Chat", {
+        screen: "ChatDetail",
+        params: {
+          title: name,
+          chatId: id,
+          receiverId: name,
+        },
+      })
+    }
   />
 );
 

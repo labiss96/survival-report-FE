@@ -50,9 +50,21 @@ const ChatStackScreen = () => (
     <ChatStack.Screen
       name="ChatDetail"
       component={ChatDetail}
-      options={{
-        title: "User",
-        // title: (props) => <LogoTitle {...props} />,
+      options={({ route, navigation }) => ({
+        title: route.params.title,
+        headerLeft: () => (
+          <IconButton
+            icon="keyboard-backspace"
+            color={Colors.grey700}
+            size={20}
+            animated={true}
+            onPress={() =>
+              navigation.navigate("Chat", {
+                screen: "ChatList",
+              })
+            }
+          />
+        ),
         headerRight: () => (
           <IconButton
             icon="exit-to-app"
@@ -62,7 +74,7 @@ const ChatStackScreen = () => (
             onPress={() => alert("exit chatting room!")}
           />
         ),
-      }}
+      })}
     />
   </ChatStack.Navigator>
 );
