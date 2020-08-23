@@ -41,7 +41,7 @@ export const Login = ({ navigation }) => {
               break;
             case 401:
               alert(err.response.data.message);
-              navigation.push("Auth");
+              navigation.push("Auth", { email: email });
               break;
             case 402:
               alert(err.response.data.message);
