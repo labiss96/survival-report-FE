@@ -1,21 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Button } from "react-native";
+import { View, StyleSheet } from "react-native";
+import { Divider, Text, List, Badge } from "react-native-paper";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { AuthContext } from "../../context";
-
 import { getReports } from "../../api/survivorAPI";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    // backgroundColor: "white",
+    paddingTop: wp("10%"),
     paddingLeft: wp("10%"),
     paddingRight: wp("10%"),
-    justifyContent: "center",
-    alignItems: "center",
+    // justifyContent: "center",
+    // alignItems: "center",
+  },
+  badge: {
+    backgroundColor: "blue",
+    marginBottom: 15,
+    marginLeft: 8,
+    marginRight: 27,
   },
 });
 
@@ -28,31 +34,34 @@ const ListView = ({ elem, index }) => {
   switch (index) {
     case 1:
       component = (
-        <View>
-          <Text>최고의 생존자 '{elem.name}'님</Text>
-          <Text>생존 시각 : {elem.pub_date}</Text>
-          <Text>---------------------------------------------------------</Text>
-        </View>
+        <>
+          <List.Item
+            title={`최후의 생존자 '${elem.name}' 님`}
+            description={elem.pub_date}
+            left={(props) => <List.Icon {...props} icon="crown" />}
+          />
+        </>
       );
       break;
     default:
       component = (
-        <View>
-          <Text>
-            {index}위 '{elem.name}'님
-          </Text>
-          <Text>생존 시각 : {elem.pub_date}</Text>
-          <Text>
-            ----------------------------------------------------------------
-          </Text>
-        </View>
+        <>
+          <List.Item
+            title={`'${elem.name}' 님`}
+            description={elem.pub_date}
+            left={(props) => (
+              <Badge style={styles.badge} size={20}>
+                {index}위
+              </Badge>
+            )}
+          />
+        </>
       );
   }
   return component;
 };
 
 export const Survivor = ({ navigation }) => {
-  const { signOut } = React.useContext(AuthContext);
   const [survivors, setSurvivors] = useState([]);
 
   const getSurvivorList = async () => {
@@ -68,14 +77,12 @@ export const Survivor = ({ navigation }) => {
 
   return (
     <ScreenContainer>
-      <View>
-        <Text>생존자 리스트</Text>
-        <Text>=======================================</Text>
-      </View>
       {survivors.map((elem, idx) => (
-        <ListView key={idx} elem={elem} index={idx + 1} />
+        <>
+          <ListView key={idx} elem={elem} index={idx + 1} />
+          <Divider />
+        </>
       ))}
-      <Button title="Sign Out" onPress={() => signOut()} />
     </ScreenContainer>
   );
 };
