@@ -35,11 +35,13 @@ export const ChatDetail = ({ route, navigation }) => {
   const { onMessage } = React.useContext(AuthContext);
 
   const handlingSend = () => {
-    onMessage("INITIAL", "Hello", 3);
+    let  json_message = {
+      type: 'INITIAL',
+      message: 'Hello',
+      receiver_id: 3
+    }
+    onMessage(json_message);
   }
-
-  //useEffect(() => {
-  //}, []);
 
   return (
     <ScreenContainer>

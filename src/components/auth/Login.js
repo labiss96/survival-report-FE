@@ -15,7 +15,7 @@ const ScreenContainer = ({ children }) => (
 );
 
 export const Login = ({ navigation }) => {
-  const { signIn, setupWebsocket } = React.useContext(AuthContext);
+  const { signIn, setupWebsocket, initWebsocket } = React.useContext(AuthContext);
 
   const [email, setEmail] = useState("cxz9080@gmail.com");
   const [password, setPassword] = useState("cakecake");
@@ -31,9 +31,9 @@ export const Login = ({ navigation }) => {
     })
       .then(async (result) => {
         console.log(result);
-        //initWebSocket();
-        signIn(result.data.token, result.data.userId);
-        setupWebsocket(result.data.userId);
+
+        await signIn(result.data.token, result.data.userId);
+        await initWebsocket(result.data.userId);
       })
       .catch((err) => {
         if (err.response) {
