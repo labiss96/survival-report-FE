@@ -6,31 +6,37 @@ import { AuthContext } from "../../context";
 import {Avatar} from 'react-native-paper';
 
 export const ChatDetail = ({ route, navigation }) => {
-  const { receiverName } = route.params;
-  const { onMessage } = React.useContext(AuthContext);
+  const { receiverName, receiverId } = route.params;
+  const { onMessage, messageList } = React.useContext(AuthContext);
   const [messages, setMessages] = useState([]);
 
-  useEffect(() => {
-    setMessages([
-      {
-        _id: 4324324,
-        text: `씨발련아`,
-        createdAt: new Date('2020-08-26'),
-        user: {
-          _id: 2,
-        },
-      },
-      {
-        _id: 1,
-        text: `안녕 내 이름은 ${receiverName}이야 시발`,
-        createdAt: new Date('2020-08-25'),
-        user: {
-          _id: 2,
-        },
-      },
+  //useEffect(() => {
+  //  setMessages([
+  //    {
+  //      _id: 4324324,
+  //      text: `씨발련아`,
+  //      createdAt: new Date('2020-08-26'),
+  //      user: {
+  //        _id: 2,
+  //      },
+  //    },
+  //    {
+  //      _id: 1,
+  //      text: `안녕 내 이름은 ${receiverName}이야 시발`,
+  //      createdAt: new Date('2020-08-25'),
+  //      user: {
+  //        _id: 2,
+  //      },
+  //    },
       
-    ])
-  }, [receiverName]);
+  //  ])
+  //}, [receiverName]);
+
+  useEffect(() => {
+    console.log('run useEffect::MessageList');
+    console.log(messageList);
+    setMessages(messageList);
+  }, [messageList])
 
   const onSend = useCallback((messages = []) => {
     let message = messages[0].text;
@@ -46,7 +52,7 @@ export const ChatDetail = ({ route, navigation }) => {
     let  json_message = {
       type: 'INITIAL',
       message: message,
-      receiver_id: 3
+      receiver_id: receiverId
     }
     onMessage(json_message);
   }
