@@ -247,7 +247,7 @@ export default () => {
       },
       getReportFlag: reportFlag,
 
-      setupWebsocket : (user_id) => { setupWebsocket(user_id); },
+      setupWebsocket : async (user_id) => { await setupWebsocket(user_id); },
 
       onMessage: (type, message, receiver_id) => {
         sendMessage(type, message, receiver_id);
@@ -255,10 +255,15 @@ export default () => {
     };
   }, []);
 
-  const sendMessage = (type, message, receiver_id) => {
+  const sendMessage = async (type, message, receiver_id) => {
     console.log('run send message');
     console.log(websocket);
-    websocket.send(JSON.stringify({type: type, message: message, receiver_id: receiver_id}))
+    
+    if(websocket !== null) {
+      await websocket.send(JSON.stringify({type: type, message: message, receiver_id: receiver_id}))
+    } else {
+      console.log('websocket is null!');
+    }
   }
 
   const setupWebsocket = (userId) => {

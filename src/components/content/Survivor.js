@@ -36,13 +36,14 @@ const ScreenContainer = ({ children }) => (
   <View style={styles.container}>{children}</View>
 );
 
-const ListView = ({ elem, index, navigation }) => {
+const ListView = ({ elem, index, navigation, key }) => {
   let component = "";
   switch (index) {
     case 1:
       component = (
         <>
           <List.Item
+            key={key}
             title={`최후의 생존자 '${elem.name}' 님`}
             description={elem.pub_date}
             left={(props) => <List.Icon {...props} icon="crown" />}
@@ -73,6 +74,19 @@ const ListView = ({ elem, index, navigation }) => {
               <Badge style={styles.badge} size={20}>
                 {index}위
               </Badge>
+            )}
+            right={(props) => (
+              <IconButton
+                icon="chat"
+                color={Colors.red500}
+                size={20}
+                onPress={() =>
+                  navigation.navigate("Chat", {
+                    screen: "ChatDetail",
+                    params: { title: elem.name, receiverId: elem.name },
+                  })
+                }
+              />
             )}
           />
         </>
