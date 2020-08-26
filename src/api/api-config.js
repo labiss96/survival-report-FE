@@ -1,10 +1,10 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-community/async-storage";
 
-axios.defaults.baseURL = "http:/192.168.0.12:8000/";
+ axios.defaults.baseURL = "http://172.30.1.54:8080/";
+//axios.defaults.baseURL = "http://172.30.1.36:8080/";
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
-
 const tokenConfig = async () => {
   let token = null;
   try {

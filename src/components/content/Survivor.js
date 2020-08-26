@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet } from "react-native";
-import { Divider, Text, List, Badge } from "react-native-paper";
+import {
+  Divider,
+  Text,
+  List,
+  Badge,
+  IconButton,
+  Colors,
+} from "react-native-paper";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -29,7 +36,7 @@ const ScreenContainer = ({ children }) => (
   <View style={styles.container}>{children}</View>
 );
 
-const ListView = ({ elem, index }) => {
+const ListView = ({ elem, index, navigation }) => {
   let component = "";
   switch (index) {
     case 1:
@@ -39,6 +46,19 @@ const ListView = ({ elem, index }) => {
             title={`최후의 생존자 '${elem.name}' 님`}
             description={elem.pub_date}
             left={(props) => <List.Icon {...props} icon="crown" />}
+            right={(props) => (
+              <IconButton
+                icon="chat"
+                color={Colors.red500}
+                size={20}
+                onPress={() =>
+                  navigation.navigate("Chat", {
+                    screen: "ChatDetail",
+                    params: { title: elem.name, receiverId: elem.name },
+                  })
+                }
+              />
+            )}
           />
         </>
       );
@@ -79,7 +99,12 @@ export const Survivor = ({ navigation }) => {
     <ScreenContainer>
       {survivors.map((elem, idx) => (
         <>
-          <ListView key={idx} elem={elem} index={idx + 1} />
+          <ListView
+            key={idx}
+            elem={elem}
+            index={idx + 1}
+            navigation={navigation}
+          />
           <Divider />
         </>
       ))}

@@ -1,16 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
-  Button,
 } from "react-native";
+
+import { TextInput, Button } from "react-native-paper";
+
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+
+import { AuthContext } from "../../context";
 
 const styles = StyleSheet.create({
   container: {
@@ -27,12 +30,24 @@ const ScreenContainer = ({ children }) => (
   <View style={styles.container}>{children}</View>
 );
 
-export const ChatDetail = ({ navigation }) => {
+export const ChatDetail = ({ route, navigation }) => {
+  const { receiverId } = route.params;
+  const { onMessage } = React.useContext(AuthContext);
+
+  const handlingSend = () => {
+    onMessage("INITIAL", "Hello", 3);
+  }
+
+  //useEffect(() => {
+  //}, []);
+
   return (
     <ScreenContainer>
       <View>
-        <Text>Chat Detail Screen!</Text>
+        <Text>Chat Detail Screen! :: {receiverId}</Text>
+        <Button onPress={() => handlingSend()}>Fuck</Button>
       </View>
+      
     </ScreenContainer>
   );
 };
