@@ -35,14 +35,13 @@ const ScreenContainer = ({ children }) => (
   <View style={styles.container}>{children}</View>
 );
 
-const ListView = ({ elem, index, navigation, key }) => {
+const ListView = ({ elem, index, navigation }) => {
   let component = "";
   switch (index) {
     case 1:
       component = (
         <>
           <List.Item
-            key={key}
             title={`최후의 생존자 '${elem.name}' 님`}
             description={elem.pub_date}
             left={(props) => <List.Icon {...props} icon="crown" />}
@@ -118,7 +117,7 @@ export const Survivor = ({ navigation }) => {
             index={idx + 1}
             navigation={navigation}
           />
-          <Divider />
+          <Divider/>
         </>
       ))}
     </ScreenContainer>

@@ -9,7 +9,7 @@ import { MaterialCommunityIcons as Icon } from "react-native-vector-icons";
 
 import AsyncStorage from "@react-native-community/async-storage";
 
-import { AuthContext } from "./context";
+import { AuthContext, SocketContext } from "./context";
 
 import {initWebSocket, sendMessage} from './api/socket-config';
 
@@ -47,6 +47,7 @@ const ChatStackScreen = () => (
       component={Chat}
       options={{
         title: "Chat List",
+        headerLeft: null
       }}
     />
     <ChatStack.Screen
@@ -179,8 +180,15 @@ const RootStackScreen = ({ userToken, reportFlag }) => {
 };
 
 export default () => {
-  // const [userToken, setUserToken] = useState(null);
+
   const [reportFlag, setReportFlag] = useState(false);
+   
+  const [messages, setMessages] = useState([]);
+
+  let websocket = null;
+  const setWebsocket = (ws) => {
+    websocket = ws;
+  }
 
   const initialLoginState = {
     isLoading: true,
@@ -246,62 +254,24 @@ export default () => {
       },
       getReportFlag: reportFlag,
 
-      initWebsocket: (user_id) => {
-        initWebSocket(user_id);
+      initWebsocket: async(user_id) => {
+        let ws = new WebSocket(`ws://172.30.1.38:8088/ws/chat/${user_id}`);
+        ws = await initWebSocket(ws);
+        setWebsocket(ws);
+        websocket.onmessage = (e) => {
+          console.log('get message event !!! > ', e.data);
+          
+        }
+        console.log(`====== store websocket ====> ${websocket}`);
       },
       
       onMessage: (data) => {
-        sendMessage(data);
-      }
+        sendMessage(websocket, data);
+      },
+
+      messageList : messages
     };
   }, []);
-
-  //const sendMessage = (data) => {
-  
-  //  if(websocket !== null) {
-  //    console.log(`websocket object : ${websocket}`);
-  //    console.log('run send message');
-  //    try{
-  //      websocket.send(JSON.stringify(data));
-  //    }catch(e) {
-  //      console.log(`error : ${e}`);
-  //    }
-      
-  //  } else {
-  //    console.log('websocket is null!');
-  //  }
-  //}
-
-  //const setupWebsocket = (ws) => {
-
-  //  if(ws !== null) {
-    
-  //    console.log('run setup websocket');
-      
-  //    ws.onopen = async() => {
-  //      console.log('run ws open!');
-  //      // connection opened
-  //      await setWebsocket(ws);
-  //      console.log('저장 제대로 됬냐? ', websocket);
-  //    };
-
-  //    ws.onmessage = (e) => {
-  //      let data = JSON.parse(e.data);
-  //      console.log(data);
-  //      //let msg = data['message'];
-  //      //console.log(`message : ${msg}`);
-  //      //console.log(`Room ID : ${data['room_id']}`);
-  //    }
-      
-      
-  //    ws.onerror = (e) => {
-  //      // an error occurred
-  //      console.log(e.message);
-  //    };
-  //  } else {
-  //    console.log('websocket is null!');
-  //  }
-  //}
 
   useEffect(() => {
     setReportFlag(false);
@@ -321,12 +291,12 @@ export default () => {
   }
   return (
     <AuthContext.Provider value={authContext}>
-      <NavigationContainer>
-        <RootStackScreen
-          userToken={loginState.userToken}
-          reportFlag={reportFlag}
-        />
-      </NavigationContainer>
+        <NavigationContainer>
+          <RootStackScreen
+            userToken={loginState.userToken}
+            reportFlag={reportFlag}
+          />
+        </NavigationContainer>
     </AuthContext.Provider>
   );
 };

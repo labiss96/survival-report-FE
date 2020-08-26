@@ -3,7 +3,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { GiftedChat } from 'react-native-gifted-chat';
 
 import { AuthContext } from "../../context";
-import { sendMessage } from "../../api/socket-config";
+import {Avatar} from 'react-native-paper';
 
 export const ChatDetail = ({ route, navigation }) => {
   const { receiverName } = route.params;
@@ -13,25 +13,35 @@ export const ChatDetail = ({ route, navigation }) => {
   useEffect(() => {
     setMessages([
       {
-        _id: 1,
-        text: `안녕 내 이름은 ${receiverName}이야 시발`,
-        createdAt: new Date(),
+        _id: 4324324,
+        text: `씨발련아`,
+        createdAt: new Date('2020-08-26'),
         user: {
           _id: 2,
-          name: receiverName,
-          avatar: 'https://placeimg.com/140/140/any',
         },
       },
+      {
+        _id: 1,
+        text: `안녕 내 이름은 ${receiverName}이야 시발`,
+        createdAt: new Date('2020-08-25'),
+        user: {
+          _id: 2,
+        },
+      },
+      
     ])
   }, [receiverName]);
 
   const onSend = useCallback((messages = []) => {
     let message = messages[0].text;
+    console.log(messages[0]);
     sendSocket(message);
+
+    //가공
 
     setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
   }, [])
-
+ 
   const sendSocket = (message) => {
     let  json_message = {
       type: 'INITIAL',
@@ -42,17 +52,19 @@ export const ChatDetail = ({ route, navigation }) => {
   }
 
   return (
-    //<ScreenContainer>
-    //  <View>
-    //    <Text>Chat Detail Screen! :: {receiverId}</Text>
-    //    <Button onPress={() => handlingSend()}>Fuck</Button>
-    //  </View>
-      
-    //</ScreenContainer>
     <GiftedChat
       messages={messages}
       onSend={messages => onSend(messages)}
       user={{_id: 1}}
+      renderAvatar={(props) => {
+        //<Avatar.Icon size={40} icon="weather-sunset-up" />
+          return(
+            <Avatar.Icon size={40} icon="account" />
+            
+          );
+        
+      }}
+      //avatar={'https://placeimg.com/140/140/any'}
       />
   );
 };
