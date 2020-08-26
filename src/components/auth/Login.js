@@ -8,14 +8,14 @@ import {
 
 import { onLogin } from "../../api/authAPI";
 import { AuthContext } from "../../context";
-import { initWebSocket } from "../../api/socket-config";
+//import { initWebSocket } from "../../api/socket-config";
 
 const ScreenContainer = ({ children }) => (
   <View style={styles.container}>{children}</View>
 );
 
 export const Login = ({ navigation }) => {
-  const { signIn } = React.useContext(AuthContext);
+  const { signIn, setupWebsocket } = React.useContext(AuthContext);
 
   const [email, setEmail] = useState("cxz9080@gmail.com");
   const [password, setPassword] = useState("cakecake");
@@ -31,8 +31,9 @@ export const Login = ({ navigation }) => {
     })
       .then(async (result) => {
         console.log(result);
-        initWebSocket();
+        //initWebSocket();
         signIn(result.data.token, result.data.userId);
+        setupWebsocket(result.data.userId);
       })
       .catch((err) => {
         if (err.response) {

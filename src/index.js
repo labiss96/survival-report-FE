@@ -3,7 +3,7 @@ import { StyleSheet, Button } from "react-native";
 import { IconButton, Colors } from "react-native-paper";
 
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
+import { createStackNavigator, Assets } from "@react-navigation/stack";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { MaterialCommunityIcons as Icon } from "react-native-vector-icons";
 
@@ -181,6 +181,7 @@ const RootStackScreen = ({ userToken, reportFlag }) => {
 export default () => {
   // const [userToken, setUserToken] = useState(null);
   const [reportFlag, setReportFlag] = useState(false);
+  const [websocket, setWebsocket] = useState(null);
 
   const initialLoginState = {
     isLoading: true,
@@ -217,10 +218,11 @@ export default () => {
         try {
           await AsyncStorage.setItem("userToken", token);
           await AsyncStorage.setItem("userId", String(userId));
+
         } catch (e) {
           console.log(e);
         }
-        dispatch({ type: "LOGIN", token: token });
+        dispatch({ type: "LOGIN", token: token});
       },
 
       signUp: () => {
@@ -232,6 +234,7 @@ export default () => {
         try {
           await AsyncStorage.removeItem("userToken");
           await AsyncStorage.removeItem("userId");
+          
         } catch (e) {
           console.log(e);
         }
@@ -243,8 +246,47 @@ export default () => {
         setReportFlag(true);
       },
       getReportFlag: reportFlag,
+
+      setupWebsocket : (user_id) => { setupWebsocket(user_id); },
+
+      onMessage: (type, message, receiver_id) => {
+        sendMessage(type, message, receiver_id);
+      }
     };
   }, []);
+
+  const sendMessage = (type, message, receiver_id) => {
+    console.log('run send message');
+    console.log(websocket);
+    websocket.send(JSON.stringify({type: type, message: message, receiver_id: receiver_id}))
+  }
+
+  const setupWebsocket = (userId) => {
+
+    let ws = new WebSocket(`ws://172.30.1.54:8080/ws/chat/${userId}`);
+    
+    console.log('run setup websocket');
+    
+    ws.onopen = () => {
+      console.log('run ws open!');
+      // connection opened
+      //ws.send(JSON.stringify({message: 'hello this is react-native!'})); // send a message
+    };
+
+    ws.onmessage = (e) => {
+      let data = JSON.parse(e.data);
+      let msg = data['message'];
+      console.log(`message : ${msg}`);
+    }
+    
+    
+    ws.onerror = (e) => {
+      // an error occurred
+      console.log(e.message);
+    };
+
+    setWebsocket(ws);
+  }
 
   useEffect(() => {
     console.log("run useEffect : Index");

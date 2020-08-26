@@ -3,16 +3,17 @@ import {
   View,
   Text,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
-  Button,
 } from "react-native";
+
+import { TextInput, Button } from "react-native-paper";
+
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 
-import { IconButton, Colors } from "react-native-paper";
+import { AuthContext } from "../../context";
 
 const styles = StyleSheet.create({
   container: {
@@ -31,28 +32,22 @@ const ScreenContainer = ({ children }) => (
 
 export const ChatDetail = ({ route, navigation }) => {
   const { receiverId } = route.params;
-  useEffect(() => {
-    // navigation.setOptions({
-    //   headerLeft: () => (
-    //     <IconButton
-    //       icon="keyboard-backspace"
-    //       color={Colors.grey700}
-    //       size={20}
-    //       animated={true}
-    //       onPress={() =>
-    //         navigation.navigate("Chat", {
-    //           screen: "ChatList",
-    //         })
-    //       }
-    //     />
-    //   ),
-    // });
-  }, []);
+  const { onMessage } = React.useContext(AuthContext);
+
+  const handlingSend = () => {
+    onMessage("INITIAL", "Hello", 3);
+  }
+
+  //useEffect(() => {
+  //}, []);
+
   return (
     <ScreenContainer>
       <View>
         <Text>Chat Detail Screen! :: {receiverId}</Text>
+        <Button onPress={() => handlingSend()}>Fuck</Button>
       </View>
+      
     </ScreenContainer>
   );
 };
