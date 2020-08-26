@@ -53,7 +53,7 @@ const ListView = ({ elem, index, navigation }) => {
                 onPress={() =>
                   navigation.navigate("Chat", {
                     screen: "ChatDetail",
-                    params: { title: elem.name, receiverName: elem.name, receiverId: elem.id },
+                    params: { receiverName: elem.name, receiverName: elem.name, receiverId: elem.id },
                   })
                 }
               />

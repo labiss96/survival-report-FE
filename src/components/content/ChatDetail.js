@@ -1,41 +1,37 @@
 import React, { useEffect, useState, useCallback } from "react";
 
+import AsyncStorage from "@react-native-community/async-storage";
 import { GiftedChat } from 'react-native-gifted-chat';
-
+import { getChatLog } from '../../api/chatAPI';
 import { AuthContext } from "../../context";
-import {Avatar} from 'react-native-paper';
+import { Avatar } from 'react-native-paper';
 
 export const ChatDetail = ({ route, navigation }) => {
   const { receiverName, receiverId } = route.params;
-  const { onMessage, messageList } = React.useContext(AuthContext);
+  const { onMessage, messageList, getUserId } = React.useContext(AuthContext);
   const [messages, setMessages] = useState([]);
+  
 
-  //useEffect(() => {
-  //  setMessages([
-  //    {
-  //      _id: 4324324,
-  //      text: `씨발련아`,
-  //      createdAt: new Date('2020-08-26'),
-  //      user: {
-  //        _id: 2,
-  //      },
-  //    },
-  //    {
-  //      _id: 1,
-  //      text: `안녕 내 이름은 ${receiverName}이야 시발`,
-  //      createdAt: new Date('2020-08-25'),
-  //      user: {
-  //        _id: 2,
-  //      },
-  //    },
-      
-  //  ])
-  //}, [receiverName]);
+  const initChat = async () => {
+    console.log('this is userID:', getUserId());
+    await getChatLog(getUserId(), receiverId).then(result => {
+      //console.log('get chatting log data >> ', result.data);
+      setMessages(result.data.messages)
+    })
+  }
+
+  useEffect(() => {
+    navigation.addListener('focus', () => {
+      initChat();
+    });
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    //return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
     console.log('run useEffect::MessageList');
     console.log(messageList);
-    setMessages(messageList);
+    //setMessages(messageList);
   }, [messageList])
 
   const onSend = useCallback((messages = []) => {
@@ -61,16 +57,10 @@ export const ChatDetail = ({ route, navigation }) => {
     <GiftedChat
       messages={messages}
       onSend={messages => onSend(messages)}
-      user={{_id: 1}}
-      renderAvatar={(props) => {
-        //<Avatar.Icon size={40} icon="weather-sunset-up" />
-          return(
-            <Avatar.Icon size={40} icon="account" />
-            
-          );
-        
+      user={{_id: Number(getUserId())}}
+      renderAvatar={() => {
+        <Avatar.Icon size={40} icon="account" />
       }}
-      //avatar={'https://placeimg.com/140/140/any'}
       />
   );
 };

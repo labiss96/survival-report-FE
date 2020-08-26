@@ -28,18 +28,19 @@ const styles = StyleSheet.create({
   },
 });
 
-const ChatView = ({ name, description, id, navigation }) => (
+const ChatView = ({ receiverName, description, receiverId, sendDate, navigation }) => (
   <List.Item
-    title={name}
+    title={receiverName}
     description={description}
     left={(props) => <List.Icon {...props} icon="account" />}
+    right={() => <Text>{String(sendDate)}</Text>}
     onPress={() =>
       navigation.navigate("Chat", {
         screen: "ChatDetail",
         params: {
           title: name,
-          chatId: id,
-          receiverName: name,
+          receiverId: receiverId,
+          receiverName: receiverName,
         },
       })
     }
@@ -49,40 +50,34 @@ const ChatView = ({ name, description, id, navigation }) => (
 export const Chat = ({ navigation }) => {
   const { signOut } = React.useContext(AuthContext);
   const [chatData, setChatData] = useState([]);
-  
+
   const getChatData = async () => {
-    const userId = await AsyncStorage.getItem("userId");
+    let userId = await AsyncStorage.getItem("userId");
     await getChatList(userId).then(result => {
       console.log('get chat data >> ', result.data.chatroom_list);
+      setChatData(result.data.chatroom_list);
     })
   }
 
   useEffect(() => {
-    const dummy = [
-      {
-        name: "이정현",
-        last_message: "테스트 메시지다..",
-        chat_id: "1",
-      },
-      {
-        name: "박종민",
-        last_message: "테스트 메시지야 시발",
-        chat_id: "2",
-      },
-    ];
+    const unsubscribe = navigation.addListener('focus', () => {
+      getChatData();
+    });
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, [navigation]);
 
-    setChatData(dummy);
-    getChatData();
-  }, []);
+
   return (
     <>
       <View>
         {chatData.map((elem, idx) => (
           <ChatView
             key={idx}
-            name={elem.name}
+            receiverName={elem.receiver_name}
+            receiverId={elem.receiver_id}
             description={elem.last_message}
-            id={elem.chat_id}
+            sendDate={elem.last_message_time}
             navigation={navigation}
           />
         ))}

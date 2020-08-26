@@ -54,7 +54,7 @@ const ChatStackScreen = () => (
       name="ChatDetail"
       component={ChatDetail}
       options={({ route, navigation }) => ({
-        title: route.params.title,
+        title: route.params.receiverName,
         headerLeft: () => (
           <IconButton
             icon="keyboard-backspace"
@@ -182,7 +182,6 @@ const RootStackScreen = ({ userToken, reportFlag }) => {
 export default () => {
 
   const [reportFlag, setReportFlag] = useState(false);
-   
   const [messages, setMessages] = useState([]);
 
   let websocket = null;
@@ -193,6 +192,7 @@ export default () => {
   const initialLoginState = {
     isLoading: true,
     userToken: null,
+    userId: '',
   };
 
   const loginReducer = (prevState, action) => {
@@ -207,12 +207,14 @@ export default () => {
         return {
           ...prevState,
           userToken: action.token,
+          userId: action.userId,
           isLoading: false,
         };
       case "LOGOUT":
         return {
           ...prevState,
           userToken: null,
+          userId: '',
           isLoading: false,
         };
     }
@@ -225,11 +227,10 @@ export default () => {
         try {
           await AsyncStorage.setItem("userToken", token);
           await AsyncStorage.setItem("userId", String(userId));
-
         } catch (e) {
           console.log(e);
         }
-        dispatch({ type: "LOGIN", token: token});
+        dispatch({ type: "LOGIN", token: token, userId: userId });
       },
 
       signUp: () => {
@@ -259,7 +260,7 @@ export default () => {
         ws = await initWebSocket(ws);
         setWebsocket(ws);
         websocket.onmessage = (e) => {
-          console.log('get message event !!! > ', e.data);
+          console.log('get message event !!! > ', JSON.stringify(e.data));
           setMessages(prevState => [...prevState, e.data]);
         }
         console.log(`====== store websocket ====> ${websocket}`);
@@ -269,7 +270,11 @@ export default () => {
         sendMessage(websocket, data);
       },
 
-      messageList : messages
+      messageList : messages,
+
+      getUserId: () => {
+        return loginState.userId
+      }
     };
   }, []);
 
