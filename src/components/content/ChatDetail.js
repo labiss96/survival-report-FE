@@ -1,55 +1,58 @@
-import React, { useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
 
-import { TextInput, Button } from "react-native-paper";
-
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { GiftedChat } from 'react-native-gifted-chat';
 
 import { AuthContext } from "../../context";
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-    paddingLeft: wp("3%"),
-    paddingRight: wp("3%"),
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
-
-const ScreenContainer = ({ children }) => (
-  <View style={styles.container}>{children}</View>
-);
+import { sendMessage } from "../../api/socket-config";
 
 export const ChatDetail = ({ route, navigation }) => {
-  const { receiverId } = route.params;
+  const { receiverName } = route.params;
   const { onMessage } = React.useContext(AuthContext);
+  const [messages, setMessages] = useState([]);
 
-  const handlingSend = () => {
+  useEffect(() => {
+    setMessages([
+      {
+        _id: 1,
+        text: `안녕 내 이름은 ${receiverName}이야 시발`,
+        createdAt: new Date(),
+        user: {
+          _id: 2,
+          name: receiverName,
+          avatar: 'https://placeimg.com/140/140/any',
+        },
+      },
+    ])
+  }, [receiverName]);
+
+  const onSend = useCallback((messages = []) => {
+    let message = messages[0].text;
+    sendSocket(message);
+
+    setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
+  }, [])
+
+  const sendSocket = (message) => {
     let  json_message = {
       type: 'INITIAL',
-      message: 'Hello',
+      message: message,
       receiver_id: 3
     }
     onMessage(json_message);
   }
 
   return (
-    <ScreenContainer>
-      <View>
-        <Text>Chat Detail Screen! :: {receiverId}</Text>
-        <Button onPress={() => handlingSend()}>Fuck</Button>
-      </View>
+    //<ScreenContainer>
+    //  <View>
+    //    <Text>Chat Detail Screen! :: {receiverId}</Text>
+    //    <Button onPress={() => handlingSend()}>Fuck</Button>
+    //  </View>
       
-    </ScreenContainer>
+    //</ScreenContainer>
+    <GiftedChat
+      messages={messages}
+      onSend={messages => onSend(messages)}
+      user={{_id: 1}}
+      />
   );
 };

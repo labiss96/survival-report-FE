@@ -15,7 +15,7 @@ const ScreenContainer = ({ children }) => (
 );
 
 export const Login = ({ navigation }) => {
-  const { signIn, setupWebsocket, initWebsocket } = React.useContext(AuthContext);
+  const { signIn, initWebsocket } = React.useContext(AuthContext);
 
   const [email, setEmail] = useState("cxz9080@gmail.com");
   const [password, setPassword] = useState("cakecake");
