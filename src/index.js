@@ -142,9 +142,7 @@ const AuthStackScreen = () => (
 const RootStack = createStackNavigator();
 const RootStackScreen = ({ userToken, reportFlag }) => {
   useEffect(() => {
-    console.log("run useEffect : RootStack");
-    console.log("userToken : ", userToken);
-    console.log("report Flag : ", reportFlag);
+    console.log(`run useEffect : RootStack \n -userToken : [${userToken}] \n -report Flag : ${reportFlag}`);
   });
   return (
     <RootStack.Navigator headerMode="none">
@@ -247,54 +245,66 @@ export default () => {
       },
       getReportFlag: reportFlag,
 
-      setupWebsocket : async (user_id) => { await setupWebsocket(user_id); },
+      initWebsocket: (userId) => {
 
-      onMessage: (type, message, receiver_id) => {
-        sendMessage(type, message, receiver_id);
+        let ws = new WebSocket(`ws://172.30.1.54:8080/ws/chat/${userId}`);
+        setupWebsocket(ws);
+      },
+      
+      onMessage: (data) => {
+        sendMessage(data);
       }
     };
   }, []);
 
-  const sendMessage = async (type, message, receiver_id) => {
-    console.log('run send message');
-    console.log(websocket);
-    
+  const sendMessage = (data) => {
+  
     if(websocket !== null) {
-      await websocket.send(JSON.stringify({type: type, message: message, receiver_id: receiver_id}))
+      console.log(`websocket object : ${websocket}`);
+      console.log('run send message');
+      try{
+        websocket.send(JSON.stringify(data));
+      }catch(e) {
+        console.log(`error : ${e}`);
+      }
+      
     } else {
       console.log('websocket is null!');
     }
   }
 
-  const setupWebsocket = (userId) => {
+  const setupWebsocket = (ws) => {
 
-    let ws = new WebSocket(`ws://172.30.1.54:8080/ws/chat/${userId}`);
+    if(ws !== null) {
     
-    console.log('run setup websocket');
-    
-    ws.onopen = () => {
-      console.log('run ws open!');
-      // connection opened
-      //ws.send(JSON.stringify({message: 'hello this is react-native!'})); // send a message
-    };
+      console.log('run setup websocket');
+      
+      ws.onopen = () => {
+        console.log('run ws open!');
+        // connection opened
+        setWebsocket(ws);
+        console.log('저장 제대로 됬냐? ', websocket);
+      };
 
-    ws.onmessage = (e) => {
-      let data = JSON.parse(e.data);
-      let msg = data['message'];
-      console.log(`message : ${msg}`);
+      ws.onmessage = (e) => {
+        let data = JSON.parse(e.data);
+        console.log(data);
+        //let msg = data['message'];
+        //console.log(`message : ${msg}`);
+        //console.log(`Room ID : ${data['room_id']}`);
+      }
+      
+      
+      ws.onerror = (e) => {
+        // an error occurred
+        console.log(e.message);
+      };
+    } else {
+      console.log('websocket is null!');
     }
-    
-    
-    ws.onerror = (e) => {
-      // an error occurred
-      console.log(e.message);
-    };
-
-    setWebsocket(ws);
   }
 
   useEffect(() => {
-    console.log("run useEffect : Index");
     setReportFlag(false);
     setTimeout(async () => {
       let userToken = null;
