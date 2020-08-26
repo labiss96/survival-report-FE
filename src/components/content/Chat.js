@@ -37,7 +37,7 @@ const ChatView = ({ name, description, id, navigation }) => (
         params: {
           title: name,
           chatId: id,
-          receiverId: name,
+          receiverName: name,
         },
       })
     }
