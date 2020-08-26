@@ -254,13 +254,13 @@ export default () => {
       },
       getReportFlag: reportFlag,
 
-      initWebsocket: async(user_id) => {
+      initWebsocket: async  (user_id) => {
         let ws = new WebSocket(`ws://172.30.1.38:8088/ws/chat/${user_id}`);
         ws = await initWebSocket(ws);
         setWebsocket(ws);
         websocket.onmessage = (e) => {
           console.log('get message event !!! > ', e.data);
-          
+          setMessages(prevState => [...prevState, e.data]);
         }
         console.log(`====== store websocket ====> ${websocket}`);
       },

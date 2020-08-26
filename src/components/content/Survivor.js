@@ -44,7 +44,7 @@ const ListView = ({ elem, index, navigation }) => {
           <List.Item
             title={`최후의 생존자 '${elem.name}' 님`}
             description={elem.pub_date}
-            left={(props) => <List.Icon {...props} icon="crown" />}
+            left={(props) => <List.Icon key={`LI-${index}`} {...props} icon="crown" />}
             right={(props) => (
               <IconButton
                 icon="chat"
@@ -53,7 +53,7 @@ const ListView = ({ elem, index, navigation }) => {
                 onPress={() =>
                   navigation.navigate("Chat", {
                     screen: "ChatDetail",
-                    params: { title: elem.name, receiverName: elem.name },
+                    params: { title: elem.name, receiverName: elem.name, receiverId: elem.id },
                   })
                 }
               />
@@ -81,7 +81,7 @@ const ListView = ({ elem, index, navigation }) => {
                 onPress={() =>
                   navigation.navigate("Chat", {
                     screen: "ChatDetail",
-                    params: { title: elem.name, receiverId: elem.name },
+                    params: { title: elem.name, receiverName: elem.name, receiverId: elem.id },
                   })
                 }
               />
@@ -109,12 +109,12 @@ export const Survivor = ({ navigation }) => {
 
   return (
     <ScreenContainer>
-      {survivors.map((elem, idx) => (
+      {survivors.map((elem, index) => (
         <>
           <ListView
-            key={idx}
+            key={`listview-${index}`}
             elem={elem}
-            index={idx + 1}
+            index={index + 1}
             navigation={navigation}
           />
           <Divider/>

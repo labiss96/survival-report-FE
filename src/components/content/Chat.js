@@ -14,6 +14,8 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { AuthContext } from "../../context";
+import { getChatList } from '../../api/chatAPI';
+import AsyncStorage from "@react-native-community/async-storage";
 
 const styles = StyleSheet.create({
   container: {
@@ -47,6 +49,14 @@ const ChatView = ({ name, description, id, navigation }) => (
 export const Chat = ({ navigation }) => {
   const { signOut } = React.useContext(AuthContext);
   const [chatData, setChatData] = useState([]);
+  
+  const getChatData = async () => {
+    const userId = await AsyncStorage.getItem("userId");
+    await getChatList(userId).then(result => {
+      console.log('get chat data >> ', result.data.chatroom_list);
+    })
+  }
+
   useEffect(() => {
     const dummy = [
       {
@@ -62,6 +72,7 @@ export const Chat = ({ navigation }) => {
     ];
 
     setChatData(dummy);
+    getChatData();
   }, []);
   return (
     <>
