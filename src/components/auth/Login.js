@@ -1,21 +1,16 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { TextInput, Button } from "react-native-paper";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { theme } from '../../core/theme';
 
 import { onLogin } from "../../api/authAPI";
-//import { AuthContext } from "../../context";
-//import { initWebSocket } from "../../api/socket-config";
-
 import { useAuthStore } from "../../store/authContext";
-import { useObserver } from "mobx-react";
-
-const ScreenContainer = ({ children }) => (
-  <View style={styles.container}>{children}</View>
-);
+import Background from "../common/Background";
+import TextInput from '../common/TextInput';
 
 export const Login = ({ navigation }) => {
   const store = useAuthStore();
@@ -72,8 +67,52 @@ export const Login = ({ navigation }) => {
   };
 
   return (
-    <ScreenContainer>
-      <View style={styles.titleArea}>
+    <Background>
+      <Image source={require('../../assets/logo.png')} style={styles.logo} />
+
+      <TextInput
+        label="Email"
+        returnKeyType="next"
+        value={email.value}
+        onChangeText={text => setEmail({ value: text, error: '' })}
+        error={!!email.error}
+        errorText={email.error}
+        autoCapitalize="none"
+        autoCompleteType="email"
+        textContentType="emailAddress"
+        keyboardType="email-address"
+      />
+
+      <TextInput
+        label="Password"
+        returnKeyType="done"
+        value={password.value}
+        onChangeText={text => setPassword({ value: text, error: '' })}
+        error={!!password.error}
+        errorText={password.error}
+        secureTextEntry
+      />
+
+      <View style={styles.forgotPassword}>
+        <TouchableOpacity
+          onPress={() => alert('click forgot password!')}
+        >
+          <Text style={styles.label}>Forgot your password?</Text>
+        </TouchableOpacity>
+      </View>
+
+      <Button mode="contained" onPress={handlingLogin}>
+        Login
+      </Button>
+
+      <View style={styles.row}>
+        <Text style={styles.label}>Don’t have an account? </Text>
+        <TouchableOpacity onPress={() => navigation.push('Register')}>
+          <Text style={styles.link}>Sign up</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/*<View style={styles.titleArea}>
         <Text style={styles.title}>Suvival Report</Text>
       </View>
       <View style={styles.formArea}>
@@ -108,51 +147,15 @@ export const Login = ({ navigation }) => {
         >
           Register
         </Button>
-      </View>
-    </ScreenContainer>
+      </View>*/}
+    </Background>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // backgroundColor: "white",
-    paddingLeft: wp("10%"),
-    paddingRight: wp("10%"),
-    // justifyContent: 'center',
-  },
-  titleArea: {
-    width: "100%",
-    paddingTop: wp("20%"),
-    paddingBottom: wp("20%"),
-    alignItems: "center",
-  },
-  title: {
-    fontSize: wp("8%"),
-  },
-  formArea: {
-    width: "100%",
-    paddingBottom: wp("10%"),
-  },
-  textForm: {
-    width: "100%",
-    paddingLeft: 5,
-    paddingRight: 5,
-    marginBottom: 10,
-  },
-  buttonArea: {
-    width: "100%",
-    height: hp("5%"),
-  },
-  button: {
-    backgroundColor: "#46c3ad",
-    width: "100%",
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  buttonTitle: {
-    color: "white",
+  logo: {
+    width: 128,
+    height: 128,
+    marginBottom: 12,
   },
 });
