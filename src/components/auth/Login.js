@@ -20,7 +20,7 @@ const ScreenContainer = ({ children }) => (
 export const Login = ({ navigation }) => {
   const store = useAuthStore();
 
-  const [email, setEmail] = useState("cxz9080@gmail.com");
+  const [email, setEmail] = useState("cxz9080@likelion.org");
   const [password, setPassword] = useState("cakecake");
 
   const handlingLogin = async () => {
@@ -32,11 +32,11 @@ export const Login = ({ navigation }) => {
       email: email,
       password: password,
     })
-      .then((result) => {
+      .then(async (result) => {
         console.log(`successfully logined`, result);
 
-        store.signIn(result.data.token, result.data.userId);
-        store.initWebsocket(result.data.userId);
+        await store.signIn(result.data.token, result.data.userId);
+        await store.initWebsocket(result.data.userId);
 
         console.log('[Login.js]저장된 유저토큰 : ', store.userToken); 
       })

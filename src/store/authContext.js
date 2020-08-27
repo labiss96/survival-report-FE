@@ -1,7 +1,6 @@
 import React from 'react';
 import { useLocalStore, useObserver } from "mobx-react";
 import AsyncStorage from "@react-native-community/async-storage";
-import { initWebSocket, sendMessage } from "../api/socket-config";
 
 const AuthContext = React.createContext();
 
@@ -51,7 +50,7 @@ const AuthProvider = ({ children }) => {
     },
 
     initWebsocket: (sender_id) => {
-      store.websocket = new WebSocket(`ws://172.30.1.21/ws/chat/${sender_id}`);
+      store.websocket = new WebSocket(`ws://172.30.1.15/ws/chat/${sender_id}`);
       
       store.websocket.onopen = () => {
         // connection opened
@@ -68,6 +67,7 @@ const AuthProvider = ({ children }) => {
       store.websocket.onerror = (e) => {
         // an error occurred
         console.log(e.message);
+        console.log('websocket ERROR >> ', JSON.stringify(e));
       };
       
       store.websocket.onclose = (e) => {

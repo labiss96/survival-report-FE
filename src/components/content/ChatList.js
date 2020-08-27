@@ -47,7 +47,7 @@ const ChatView = ({ receiverName, description, receiverId, sendDate, navigation 
   />
 );
 
-export const Chat = ({ navigation }) => {
+export const ChatList = ({ navigation }) => {
   const store = useAuthStore();
   const [chatData, setChatData] = useState([]);
 

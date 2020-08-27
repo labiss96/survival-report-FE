@@ -11,13 +11,13 @@ import { MaterialCommunityIcons as Icon } from "react-native-vector-icons";
 
 import { Login } from "./components/auth/Login";
 import { Register } from "./components/auth/Register";
-import { Auth } from "./components/auth/Auth";
+import { AuthMail } from "./components/auth/AuthMail";
 
 import { Home } from "./components/content/Home";
 import { Survivor } from "./components/content/Survivor";
 import { MyPage } from "./components/content/Mypage";
 
-import { Chat } from "./components/content/Chat";
+import { ChatList } from "./components/content/ChatList";
 import { ChatDetail } from "./components/content/ChatDetail";
 
 import Progress from "./components/Progress";
@@ -42,7 +42,7 @@ const ChatStackScreen = () => (
   <ChatStack.Navigator>
     <ChatStack.Screen
       name="ChatList"
-      component={Chat}
+      component={ChatList}
       options={{
         title: "Chat List",
         headerLeft: null
@@ -134,7 +134,7 @@ const AuthStackScreen = () => (
     />
     <AuthStack.Screen
       name="Auth"
-      component={Auth}
+      component={AuthMail}
       options={{ title: "E-mail 인증" }}
     />
   </AuthStack.Navigator>
@@ -149,7 +149,7 @@ const RootStackScreen = () => {
     console.log(`run useEffect : RootStack \n -userToken : [${store.userToken}] \n -report Flag : ${store.reportFlag}`);
   }, [store]);
   
-  return (
+  return useObserver(() => (
     <RootStack.Navigator headerMode="none">
       {store.userToken ? (
         <>
@@ -178,7 +178,7 @@ const RootStackScreen = () => {
         />
       )}
     </RootStack.Navigator>
-  );
+  ));
 };
 
 
