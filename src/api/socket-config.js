@@ -26,6 +26,7 @@ const initWebSocket = (websocket) => {
       websocket.onclose = (e) => {
         // connection closed
         console.log(e.code, e.reason);
+        //websocket.connect();
       };
   
       //chatSocket.onclose = function(e) {

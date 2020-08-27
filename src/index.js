@@ -188,10 +188,6 @@ export default () => {
 
   //const { reportFlag, token } = useAuthData();
 
-  //useEffect(() => {
-  //  console.log('===========> test ===>', reportFlag, token);
-  //}, [reportFlag, token])
-
   useEffect(() => {
     setReport(false);
     
