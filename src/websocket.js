@@ -19,7 +19,7 @@ class WebSocketService {
     //const path = `${SOCKET_URL}/ws/chat/${chatUrl}/`;
     const path = `ws://172.30.1.38:8088/ws/chat/${senderID}/`;
     this.socketRef = new WebSocket(path);
-    
+
     this.socketRef.onopen = () => {
       console.log("WebSocket open");
     };
@@ -65,7 +65,7 @@ class WebSocketService {
   //  });
   //}
 
-  addCallback(messagesCallback) {
+  setCallback(messagesCallback) {
     this.callback = messagesCallback;
   }
 

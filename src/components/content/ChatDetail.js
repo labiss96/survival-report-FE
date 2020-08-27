@@ -10,8 +10,14 @@ export const ChatDetail = ({ route, navigation }) => {
   const { receiverName, receiverId } = route.params;
   const { onMessage, messageList, getUserId } = React.useContext(AuthContext);
   const [messages, setMessages] = useState([]);
+  //const [userId, setUserId] = useState( async () => {
+  //  const initialState = await AsyncStorage.getItem("userId");
+  //  console.log('sex', initialState);
+  //  return initialState;
+  //})
   let sendType = '';
   let roomId = '';
+
   
 
   const initChat = async () => {

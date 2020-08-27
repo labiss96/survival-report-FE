@@ -231,6 +231,7 @@ export default () => {
         } catch (e) {
           console.log(e);
         }
+        console.log('유저아이디시발 :', userId);
         dispatch({ type: "LOGIN", token: token, userId: userId });
       },
 
@@ -257,7 +258,7 @@ export default () => {
       getReportFlag: reportFlag,
 
       initWebsocket: async  (user_id) => {
-        let ws = new WebSocket(`ws://172.30.1.38:8088/ws/chat/${user_id}`);
+        let ws = new WebSocket(`ws://192.168.0.11:8088/ws/chat/${user_id}`);
         ws = await initWebSocket(ws);
         setWebsocket(ws);
         websocket.onmessage = (e) => {
