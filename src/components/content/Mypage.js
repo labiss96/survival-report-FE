@@ -14,7 +14,7 @@ import {
 import { ScreenContainer } from "../common/ScreenContainer";
 import { checkValidation } from "../../api/authAPI";
 
-import { AuthContext } from "../../context";
+import { useAuthStore } from "../../store/authContext";
 
 const styles = StyleSheet.create({
   container: {
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
 
 export const MyPage = ({ navigation }) => {
   const [userInfo, setUserInfo] = useState({});
-  const { signOut } = React.useContext(AuthContext);
+  const store = useAuthStore();
 
   const getUserInfo = async () => {
     await checkValidation()
@@ -55,7 +55,7 @@ export const MyPage = ({ navigation }) => {
         <Text>소개글 :: {userInfo.description}</Text>
       </View>
 
-      <Button title="Sign Out" onPress={() => signOut()} />
+      <Button title="Sign Out" onPress={() => store.signOut()} />
     </ScreenContainer>
   );
 };

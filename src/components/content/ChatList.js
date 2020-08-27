@@ -13,9 +13,9 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { AuthContext } from "../../context";
+
+import { useAuthStore } from "../../store/authContext"
 import { getChatList } from '../../api/chatAPI';
-import AsyncStorage from "@react-native-community/async-storage";
 
 const styles = StyleSheet.create({
   container: {
@@ -47,24 +47,23 @@ const ChatView = ({ receiverName, description, receiverId, sendDate, navigation 
   />
 );
 
-export const Chat = ({ navigation }) => {
-  const { signOut } = React.useContext(AuthContext);
+export const ChatList = ({ navigation }) => {
+  const store = useAuthStore();
   const [chatData, setChatData] = useState([]);
 
   const getChatData = async () => {
-    let userId = await AsyncStorage.getItem("userId");
-    await getChatList(userId).then(result => {
+    await getChatList(store.userId).then(result => {
       console.log('get chat data >> ', result.data.chatroom_list);
       setChatData(result.data.chatroom_list);
     })
   }
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
+    navigation.addListener('focus', () => {
       getChatData();
     });
-    // Return the function to unsubscribe from the event so it gets removed on unmount
-    return unsubscribe;
+    //const unsubscribe = 
+    //return unsubscribe;
   }, [navigation]);
 
 

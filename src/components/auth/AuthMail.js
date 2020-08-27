@@ -65,7 +65,7 @@ const ScreenContainer = ({ children }) => (
   <View style={styles.container}>{children}</View>
 );
 
-export const Auth = ({ route, navigation }) => {
+export const AuthMail = ({ route, navigation }) => {
   //   const [email, setEmail] = useState("cxz9080@gmail.com");
   // const [email, setEmail] = useState("dskfldsl@mfkdsmf.fd");
   const { email } = route.params;

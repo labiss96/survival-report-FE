@@ -11,9 +11,9 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { AuthContext } from "../../context";
-import AsyncStorage from "@react-native-community/async-storage";
 
+import { useAuthStore } from "../../store/authContext";
+import AsyncStorage from "@react-native-community/async-storage";
 import { onCreate } from "../../api/survivorAPI";
 
 const styles = StyleSheet.create({
@@ -66,13 +66,13 @@ const ScreenContainer = ({ children }) => (
 );
 
 export const Home = ({ navigation }) => {
-  const { signOut, getReportFlag, onReport } = useContext(AuthContext);
 
+  const store = useAuthStore();
   const [comment, setComment] = useState("");
 
   useEffect(() => {
     console.log("run useEffect : Home");
-    console.log(getReportFlag);
+    console.log('report state >> ', store.reportFlag)
   });
 
   const reportHandling = async () => {
@@ -81,7 +81,7 @@ export const Home = ({ navigation }) => {
       .then((result) => {
         console.log(result);
         alert("생존신고 완료!");
-        onReport();
+        store.setReport(true);
       })
       .catch((err) => console.log(err));
   };
@@ -109,7 +109,7 @@ export const Home = ({ navigation }) => {
       >
         <Text style={styles.buttonTitle}>생존신고!</Text>
       </TouchableOpacity>
-      <Button title="Sign Out" onPress={() => signOut()} />
+      <Button title="Sign Out" onPress={() => store.signOut()} />
     </ScreenContainer>
   );
 };

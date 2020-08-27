@@ -1,23 +1,17 @@
 import React, { useEffect, useState, useCallback } from "react";
 
-import AsyncStorage from "@react-native-community/async-storage";
 import { GiftedChat } from 'react-native-gifted-chat';
 import { getChatLog } from '../../api/chatAPI';
-import { AuthContext } from "../../context";
+import { useAuthStore } from "../../store/authContext"
 import { Avatar } from 'react-native-paper';
 
 export const ChatDetail = ({ route, navigation }) => {
   const { receiverName, receiverId } = route.params;
-  const { onMessage, messageList, getUserId } = React.useContext(AuthContext);
+  const store = useAuthStore();
+  
   const [messages, setMessages] = useState([]);
-  //const [userId, setUserId] = useState( async () => {
-  //  const initialState = await AsyncStorage.getItem("userId");
-  //  console.log('sex', initialState);
-  //  return initialState;
-  //})
   let sendType = '';
   let roomId = '';
-
   
 
   const initChat = async () => {
@@ -34,20 +28,20 @@ export const ChatDetail = ({ route, navigation }) => {
     })
   }
 
+  //화면 포커스 이벤트처리 메서드
   useEffect(() => {
     navigation.addListener('focus', () => {
       initChat();
     });
-    // Return the function to unsubscribe from the event so it gets removed on unmount
-    //return unsubscribe;
   }, [navigation]);
 
-  useEffect(() => {
-    console.log('run useEffect::MessageList : ', messageList);
-    if(messageList !== []) {
-      setMessages((prevState) => [...prevState, messageList]);
-    }
-  }, [messageList])
+//   useEffect(() => {
+//     console.log('run useEffect::MessageList : ', messageList);
+//     if(messageList !== []) {
+//       setMessages((prevState) => [...prevState, messageList]);
+//     }
+//   }, [messageList])
+
 
   const onSend = useCallback((messages = []) => {
     let message = messages[0].text;
@@ -82,16 +76,18 @@ export const ChatDetail = ({ route, navigation }) => {
       default:
         console.log('샌드타입이 뭔가 잘못됬어 시발');
     }
-    
+
+
     console.log('메시지 보내기 전 데이터 검사하자 : ', json_message);
-    onMessage(json_message);
+    store.sendMessage(json_message);
+
   }
 
   return (
     <GiftedChat
       messages={messages}
       onSend={messages => onSend(messages)}
-      user={{_id: Number(getUserId())}}
+      user={{_id: Number(store.userId)}}
       renderAvatar={() => {
         <Avatar.Icon size={40} icon="account" />
       }}
