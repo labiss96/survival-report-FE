@@ -7,10 +7,12 @@ import {
   IconButton,
   Colors,
 } from "react-native-paper";
+
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+
 import { getReports } from "../../api/survivorAPI";
 
 const styles = StyleSheet.create({
@@ -98,7 +100,7 @@ export const Survivor = ({ navigation }) => {
 
   const getSurvivorList = async () => {
     await getReports().then((result) => {
-      console.log(result.data);
+      console.log('생존자 리스트 데이터 >> ', result.data);
       setSurvivors(result.data.report_list);
     });
   };

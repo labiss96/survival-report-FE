@@ -7,15 +7,18 @@ import {
 } from "react-native-responsive-screen";
 
 import { onLogin } from "../../api/authAPI";
-import { AuthContext } from "../../context";
+//import { AuthContext } from "../../context";
 //import { initWebSocket } from "../../api/socket-config";
+
+import { useAuthStore } from "../../store/authContext";
+import { useObserver } from "mobx-react";
 
 const ScreenContainer = ({ children }) => (
   <View style={styles.container}>{children}</View>
 );
 
 export const Login = ({ navigation }) => {
-  const { signIn, initWebsocket } = React.useContext(AuthContext);
+  const store = useAuthStore();
 
   const [email, setEmail] = useState("cxz9080@gmail.com");
   const [password, setPassword] = useState("cakecake");
@@ -29,11 +32,13 @@ export const Login = ({ navigation }) => {
       email: email,
       password: password,
     })
-      .then(async (result) => {
-        console.log(result);
+      .then((result) => {
+        console.log(`successfully logined`, result);
 
-        await signIn(result.data.token, result.data.userId);
-        await initWebsocket(result.data.userId);
+        store.signIn(result.data.token, result.data.userId);
+        store.initWebsocket(result.data.userId);
+
+        console.log('[Login.js]저장된 유저토큰 : ', store.userToken); 
       })
       .catch((err) => {
         if (err.response) {
