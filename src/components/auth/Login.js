@@ -7,8 +7,6 @@ import {
 } from "react-native-responsive-screen";
 
 import { onLogin } from "../../api/authAPI";
-//import { AuthContext } from "../../context";
-//import { initWebSocket } from "../../api/socket-config";
 
 import { useAuthStore } from "../../store/authContext";
 import { useObserver } from "mobx-react";
@@ -36,7 +34,10 @@ export const Login = ({ navigation }) => {
         console.log(`successfully logined`, result);
 
         await store.signIn(result.data.token, result.data.userId);
+        console.log('로그인 잘 됬고,', result.data.userId);
+
         await store.initWebsocket(result.data.userId);
+        console.log('소켓객체는 ???', store.websocket)
 
         console.log('[Login.js]저장된 유저토큰 : ', store.userToken); 
       })

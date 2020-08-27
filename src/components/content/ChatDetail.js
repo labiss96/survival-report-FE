@@ -15,8 +15,8 @@ export const ChatDetail = ({ route, navigation }) => {
   
 
   const initChat = async () => {
-    console.log('this is userID:', getUserId());
-    await getChatLog(getUserId(), receiverId).then(result => {
+    console.log('this is userID:', store.userId);
+    await getChatLog(store.userId, receiverId).then(result => {
       console.log('get chatting log data >> ', result.data);
       if(result.data.messages.length !== 0) {
         sendType = 'MESSAGE';
@@ -28,10 +28,18 @@ export const ChatDetail = ({ route, navigation }) => {
     })
   }
 
+  const renderNewMessage = (message) => {
+    console.log('this is render message >>', message);
+    console.log('this is render message[parse] >>', JSON.parse(message));
+    
+    setMessages(previousMessages => GiftedChat.append(previousMessages, JSON.parse(message)))
+  }
+
   //화면 포커스 이벤트처리 메서드
   useEffect(() => {
     navigation.addListener('focus', () => {
       initChat();
+      store.messageCallback(renderNewMessage);
     });
   }, [navigation]);
 
@@ -45,12 +53,7 @@ export const ChatDetail = ({ route, navigation }) => {
 
   const onSend = useCallback((messages = []) => {
     let message = messages[0].text;
-    //console.log(messages[0]);
     sendSocket(message);
-
-    //가공
-
-    //setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
   }, [])
  
   const sendSocket = (message) => {
@@ -62,7 +65,7 @@ export const ChatDetail = ({ route, navigation }) => {
           type: sendType,
           message: message,
           receiver_id: receiverId,
-          sender_id: getUserId()
+          sender_id: store.userId
         }
         break;
       case 'MESSAGE':
@@ -74,9 +77,8 @@ export const ChatDetail = ({ route, navigation }) => {
         }
         break;
       default:
-        console.log('샌드타입이 뭔가 잘못됬어 시발');
+        console.log('wrong send type!');
     }
-
 
     console.log('메시지 보내기 전 데이터 검사하자 : ', json_message);
     store.sendMessage(json_message);
