@@ -201,6 +201,7 @@ export default () => {
         return {
           ...prevState,
           userToken: action.token,
+          userId: action.userId,
           isLoading: false,
         };
       case "LOGIN":
@@ -230,6 +231,7 @@ export default () => {
         } catch (e) {
           console.log(e);
         }
+        console.log('유저아이디시발 :', userId);
         dispatch({ type: "LOGIN", token: token, userId: userId });
       },
 
@@ -256,11 +258,11 @@ export default () => {
       getReportFlag: reportFlag,
 
       initWebsocket: async  (user_id) => {
-        let ws = new WebSocket(`ws://172.30.1.38:8088/ws/chat/${user_id}`);
+        let ws = new WebSocket(`ws://192.168.0.11:8088/ws/chat/${user_id}`);
         ws = await initWebSocket(ws);
         setWebsocket(ws);
         websocket.onmessage = (e) => {
-          console.log('get message event !!! > ', JSON.stringify(e.data));
+          console.log('get message event !!! > ', e.data);
           setMessages(prevState => [...prevState, e.data]);
         }
         console.log(`====== store websocket ====> ${websocket}`);
@@ -273,6 +275,7 @@ export default () => {
       messageList : messages,
 
       getUserId: () => {
+        console.log('유저아이디가 뭐라고?', loginState.userId);
         return loginState.userId
       }
     };
@@ -282,12 +285,14 @@ export default () => {
     setReportFlag(false);
     setTimeout(async () => {
       let userToken = null;
+      let userId = '';
       try {
         userToken = await AsyncStorage.getItem("userToken");
+        userId = await AsyncStorage.getItem("userId");
       } catch (e) {
         console.log(e);
       }
-      dispatch({ type: "RETRIEVE_TOKEN", token: userToken });
+      dispatch({ type: "RETRIEVE_TOKEN", token: userToken, userId: userId });
     }, 1000);
   }, []);
 
