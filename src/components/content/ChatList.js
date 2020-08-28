@@ -2,20 +2,15 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  Button,
+  Keyboard
 } from "react-native";
 
 import { List } from "react-native-paper";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
 
 import { useAuthStore } from "../../store/authContext"
 import { getChatList } from '../../api/chatAPI';
+
+const useForceUpdate = () => useState()[1];
 
 const ChatView = ({ receiverName, description, receiverId, sendDate, navigation }) => (
   <List.Item
@@ -37,6 +32,7 @@ const ChatView = ({ receiverName, description, receiverId, sendDate, navigation 
 );
 
 export const ChatList = ({ navigation }) => {
+  const forceUpdate = useForceUpdate();
   const store = useAuthStore();
   const [chatData, setChatData] = useState([]);
 
@@ -44,17 +40,28 @@ export const ChatList = ({ navigation }) => {
     await getChatList(store.userId).then(result => {
       console.log('get chat data >> ', result.data.chatroom_list);
       setChatData(result.data.chatroom_list);
+      forceUpdate();
     })
+  }
+
+  const renderNewChat = (message) => {
+    let parseMessage = JSON.parse(message);
+    console.log('this is render message[parse] :: ChatList >>', parseMessage);
+    getChatData();
   }
 
   useEffect(() => {
     navigation.addListener('focus', () => {
       getChatData();
+      store.messageCallback(renderNewChat);
     });
     //const unsubscribe = 
     //return unsubscribe;
   }, [navigation]);
-
+  
+  useEffect(() => {
+    Keyboard.dismiss();
+  })
 
   return (
     <>

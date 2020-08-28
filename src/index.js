@@ -39,7 +39,8 @@ const SurvivorStackScreen = () => (
 
 const ChatStack = createStackNavigator();
 const ChatStackScreen = () => (
-  <ChatStack.Navigator>
+  <ChatStack.Navigator
+    initialRouteName="ChatList">
     <ChatStack.Screen
       name="ChatList"
       component={ChatList}

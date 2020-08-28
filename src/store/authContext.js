@@ -74,6 +74,14 @@ const AuthProvider = ({ children }) => {
       console.log(`run send message > ${JSON.stringify(data)}`);
       store.websocket.send(JSON.stringify(data));
     },
+
+    socketReport: () => {
+      console.log('run socket report');
+      let reportMsg = {
+        type: "REPORT"
+      }
+      store.websocket.send(JSON.stringify(reportMsg));
+    }
   }));
 
   return (

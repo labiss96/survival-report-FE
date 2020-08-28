@@ -68,6 +68,7 @@ export const Home = ({ navigation }) => {
         console.log(result);
         alert("생존신고 완료!");
         store.setReport(true);
+        store.socketReport();
       })
       .catch((err) => console.log(err));
   };

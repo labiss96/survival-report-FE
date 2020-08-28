@@ -30,7 +30,7 @@ export const ChatDetail = ({ route, navigation }) => {
     })
   }
 
-  const renderNewMessage = (message) => {
+  const renderNewMessage = async (message) => {
     
     let parseMessage = JSON.parse(message);
     console.log('this is render message[parse] >>', parseMessage);
@@ -38,7 +38,11 @@ export const ChatDetail = ({ route, navigation }) => {
     sendType = 'MESSAGE';
     roomId = parseMessage.room_id;
 
-    setMessages(previousMessages => GiftedChat.append(previousMessages, parseMessage))
+    if(parseMessage.relogin !== null) {
+      await AsyncStorage.setItem("relogin", String(parseMessage.relogin));
+    } else {
+      setMessages(previousMessages => GiftedChat.append(previousMessages, parseMessage))  
+    }
   }
 
   //화면 포커스 이벤트처리 메서드
