@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
-import { TextInput, Button } from "react-native-paper";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
-import { theme } from '../../core/theme';
+import { Button } from "react-native-paper";
 
+import { theme } from '../../core/theme';
+import { emailValidator, passwordValidator } from '../../core/utils';
 import { onLogin } from "../../api/authAPI";
 
 import { useAuthStore } from "../../store/authContext";
@@ -16,13 +13,21 @@ import TextInput from '../common/TextInput';
 export const Login = ({ navigation }) => {
   const store = useAuthStore();
 
-  const [email, setEmail] = useState("cxz9080@likelion.org");
-  const [password, setPassword] = useState("cakecake");
+  const [email, setEmail] = useState({ value: 'cxz9080@likelion.org', error: '' });
+  const [password, setPassword] = useState({ value: '', error: '' });
 
   const handlingLogin = async () => {
-    console.log(`email : ${email}`);
-    console.log(`pw : ${password}`);
+    //console.log(`email : ${email}`);
+    //console.log(`pw : ${password}`);
 
+    const emailError = emailValidator(email.value);
+    const passwordError = passwordValidator(password.value);
+
+    if (emailError || passwordError) {
+      setEmail({ ...email, error: emailError });
+      setPassword({ ...password, error: passwordError });
+      return;
+    }
     //API 통신
     await onLogin({
       email: email,
@@ -72,8 +77,11 @@ export const Login = ({ navigation }) => {
 
   return (
     <Background>
-      <Image source={require('../../assets/logo.png')} style={styles.logo} />
-
+      <Image source={require('../../assets/logo_icon.png')} style={styles.logo} />
+      <View>
+        <Text style={styles.header}>Report of Survivor</Text>
+      </View>
+      
       <TextInput
         label="Email"
         returnKeyType="next"
@@ -105,7 +113,10 @@ export const Login = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <Button mode="contained" onPress={handlingLogin}>
+      <Button 
+      style={styles.button}
+      labelStyle={styles.text}
+      mode="contained" onPress={handlingLogin}>
         Login
       </Button>
 
@@ -115,43 +126,6 @@ export const Login = ({ navigation }) => {
           <Text style={styles.link}>Sign up</Text>
         </TouchableOpacity>
       </View>
-
-      {/*<View style={styles.titleArea}>
-        <Text style={styles.title}>Suvival Report</Text>
-      </View>
-      <View style={styles.formArea}>
-        <TextInput
-          style={styles.textForm}
-          label={"E-mail"}
-          onChangeText={(text) => setEmail(text)}
-          value={email}
-        />
-        <TextInput
-          style={styles.textForm}
-          label={"Password"}
-          onChangeText={(text) => setPassword(text)}
-          value={password}
-        />
-      </View>
-      <View style={styles.buttonArea}>
-        <Button
-          style={styles.button}
-          mode="contained"
-          onPress={() => handlingLogin()}
-        >
-          Login
-        </Button>
-        <Button
-          style={styles.button}
-          mode="contained"
-          onPress={() => {
-            navigation.push("Register");
-            console.log("press register button!");
-          }}
-        >
-          Register
-        </Button>
-      </View>*/}
     </Background>
   );
 };
@@ -161,5 +135,38 @@ const styles = StyleSheet.create({
     width: 128,
     height: 128,
     marginBottom: 12,
+    tintColor: theme.colors.primary,
+
+  },
+  header: {
+    fontSize: 26,
+    color: theme.colors.primary,
+    fontWeight: 'bold',
+    paddingVertical: 14,
+  },
+  forgotPassword: {
+    width: '100%',
+    alignItems: 'flex-end',
+    marginBottom: 24,
+  },
+  row: {
+    flexDirection: 'row',
+    marginTop: 4,
+  },
+  label: {
+    color: theme.colors.secondary,
+  },
+  link: {
+    fontWeight: 'bold',
+    color: theme.colors.primary,
+  },
+  button: {
+    width: '100%',
+    marginVertical: 10,
+  },
+  text: {
+    fontWeight: 'bold',
+    fontSize: 15,
+    lineHeight: 26,
   },
 });

@@ -52,7 +52,7 @@ const AuthProvider = ({ children }) => {
     initWebsocket: async (sender_id) => {
       console.log('============================이건 호출 되냐???', sender_id);
 
-      let ws = new WebSocket(`ws://172.30.1.21:8088/ws/chat/${sender_id}`);
+      let ws = new WebSocket(`ws://192.168.0.6:8088/ws/chat/${sender_id}`);
       ws = await setupWebsocket(ws);
 
       console.log('init 소켓 잘 끝???', ws);
