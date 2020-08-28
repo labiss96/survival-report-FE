@@ -1,30 +1,33 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { TextInput, Button } from "react-native-paper";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { Button } from "react-native-paper";
 
+import { theme } from '../../core/theme';
+import { emailValidator, passwordValidator } from '../../core/utils';
 import { onLogin } from "../../api/authAPI";
 
 import { useAuthStore } from "../../store/authContext";
-import { useObserver } from "mobx-react";
-
-const ScreenContainer = ({ children }) => (
-  <View style={styles.container}>{children}</View>
-);
+import Background from "../common/Background";
+import TextInput from '../common/TextInput';
 
 export const Login = ({ navigation }) => {
   const store = useAuthStore();
 
-  const [email, setEmail] = useState("cxz9080@likelion.org");
-  const [password, setPassword] = useState("cakecake");
+  const [email, setEmail] = useState({ value: 'cxz9080@likelion.org', error: '' });
+  const [password, setPassword] = useState({ value: '', error: '' });
 
   const handlingLogin = async () => {
-    console.log(`email : ${email}`);
-    console.log(`pw : ${password}`);
+    //console.log(`email : ${email}`);
+    //console.log(`pw : ${password}`);
 
+    const emailError = emailValidator(email.value);
+    const passwordError = passwordValidator(password.value);
+
+    if (emailError || passwordError) {
+      setEmail({ ...email, error: emailError });
+      setPassword({ ...password, error: passwordError });
+      return;
+    }
     //API 통신
     await onLogin({
       email: email,
@@ -73,87 +76,97 @@ export const Login = ({ navigation }) => {
   };
 
   return (
-    <ScreenContainer>
-      <View style={styles.titleArea}>
-        <Text style={styles.title}>Suvival Report</Text>
+    <Background>
+      <Image source={require('../../assets/logo_icon.png')} style={styles.logo} />
+      <View>
+        <Text style={styles.header}>Report of Survivor</Text>
       </View>
-      <View style={styles.formArea}>
-        <TextInput
-          style={styles.textForm}
-          label={"E-mail"}
-          onChangeText={(text) => setEmail(text)}
-          value={email}
-        />
-        <TextInput
-          style={styles.textForm}
-          label={"Password"}
-          onChangeText={(text) => setPassword(text)}
-          value={password}
-        />
-      </View>
-      <View style={styles.buttonArea}>
-        <Button
-          style={styles.button}
-          mode="contained"
-          onPress={() => handlingLogin()}
+      
+      <TextInput
+        label="Email"
+        returnKeyType="next"
+        value={email.value}
+        onChangeText={text => setEmail({ value: text, error: '' })}
+        error={!!email.error}
+        errorText={email.error}
+        autoCapitalize="none"
+        autoCompleteType="email"
+        textContentType="emailAddress"
+        keyboardType="email-address"
+      />
+
+      <TextInput
+        label="Password"
+        returnKeyType="done"
+        value={password.value}
+        onChangeText={text => setPassword({ value: text, error: '' })}
+        error={!!password.error}
+        errorText={password.error}
+        secureTextEntry
+      />
+
+      <View style={styles.forgotPassword}>
+        <TouchableOpacity
+          onPress={() => alert('click forgot password!')}
         >
-          Login
-        </Button>
-        <Button
-          style={styles.button}
-          mode="contained"
-          onPress={() => {
-            navigation.push("Register");
-            console.log("press register button!");
-          }}
-        >
-          Register
-        </Button>
+          <Text style={styles.label}>Forgot your password?</Text>
+        </TouchableOpacity>
       </View>
-    </ScreenContainer>
+
+      <Button 
+      style={styles.button}
+      labelStyle={styles.text}
+      mode="contained" onPress={handlingLogin}>
+        Login
+      </Button>
+
+      <View style={styles.row}>
+        <Text style={styles.label}>Don’t have an account? </Text>
+        <TouchableOpacity onPress={() => navigation.push('Register')}>
+          <Text style={styles.link}>Sign up</Text>
+        </TouchableOpacity>
+      </View>
+    </Background>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // backgroundColor: "white",
-    paddingLeft: wp("10%"),
-    paddingRight: wp("10%"),
-    // justifyContent: 'center',
+  logo: {
+    width: 128,
+    height: 128,
+    marginBottom: 12,
+    tintColor: theme.colors.primary,
+
   },
-  titleArea: {
-    width: "100%",
-    paddingTop: wp("20%"),
-    paddingBottom: wp("20%"),
-    alignItems: "center",
+  header: {
+    fontSize: 26,
+    color: theme.colors.primary,
+    fontWeight: 'bold',
+    paddingVertical: 14,
   },
-  title: {
-    fontSize: wp("8%"),
+  forgotPassword: {
+    width: '100%',
+    alignItems: 'flex-end',
+    marginBottom: 24,
   },
-  formArea: {
-    width: "100%",
-    paddingBottom: wp("10%"),
+  row: {
+    flexDirection: 'row',
+    marginTop: 4,
   },
-  textForm: {
-    width: "100%",
-    paddingLeft: 5,
-    paddingRight: 5,
-    marginBottom: 10,
+  label: {
+    color: theme.colors.secondary,
   },
-  buttonArea: {
-    width: "100%",
-    height: hp("5%"),
+  link: {
+    fontWeight: 'bold',
+    color: theme.colors.primary,
   },
   button: {
-    backgroundColor: "#46c3ad",
-    width: "100%",
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 10,
+    width: '100%',
+    marginVertical: 10,
   },
-  buttonTitle: {
-    color: "white",
+  text: {
+    fontWeight: 'bold',
+    fontSize: 15,
+    lineHeight: 26,
   },
 });

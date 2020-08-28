@@ -56,13 +56,6 @@ export const ChatDetail = ({ route, navigation }) => {
     });
   }, [navigation]);
 
-//   useEffect(() => {
-//     console.log('run useEffect::MessageList : ', messageList);
-//     if(messageList !== []) {
-//       setMessages((prevState) => [...prevState, messageList]);
-//     }
-//   }, [messageList])
-
 
   const onSend = useCallback((messages = []) => {
     let message = messages[0].text;
