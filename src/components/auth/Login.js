@@ -30,8 +30,8 @@ export const Login = ({ navigation }) => {
     }
     //API 통신
     await onLogin({
-      email: email,
-      password: password,
+      email: email.value,
+      password: password.value,
     })
       .then(async (result) => {
         console.log(`successfully logined`, result);
@@ -53,7 +53,7 @@ export const Login = ({ navigation }) => {
               break;
             case 401:
               alert(err.response.data.message);
-              navigation.push("Auth", { email: email });
+              navigation.push("Auth", { email: email.value });
               break;
             case 402:
               alert(err.response.data.message);

@@ -34,20 +34,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: wp("8%"),
   },
-  formArea: {
-    width: "100%",
-    paddingBottom: wp("10%"),
-  },
-  textForm: {
-    borderWidth: 0.5,
-    borderColor: "#888",
-    width: "100%",
-    height: hp("5%"),
-    paddingLeft: 5,
-    paddingRight: 5,
-    marginBottom: 10,
-    borderRadius: 5,
-  },
   button: {
     backgroundColor: "#46c3ad",
     width: "100%",
@@ -90,15 +76,6 @@ export const Home = ({ navigation }) => {
     <ScreenContainer>
       <View style={styles.titleArea}>
         <Text style={styles.title}>생 존 신 고</Text>
-      </View>
-
-      <View style={styles.formArea}>
-        <TextInput
-          style={styles.textForm}
-          placeholder={"생존 코멘트를 남겨보세요!"}
-          onChangeText={(text) => setComment(text)}
-          value={comment}
-        />
       </View>
 
       <TouchableOpacity

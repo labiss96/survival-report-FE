@@ -52,7 +52,7 @@ const AuthProvider = ({ children }) => {
     initWebsocket: async (sender_id) => {
       console.log('============================이건 호출 되냐???', sender_id);
 
-      let ws = new WebSocket(`ws://192.168.0.6:8088/ws/chat/${sender_id}`);
+      let ws = new WebSocket(`ws://192.168.0.4:8088/ws/chat/${sender_id}`);
       ws = await setupWebsocket(ws);
 
       console.log('init 소켓 잘 끝???', ws);
@@ -91,9 +91,17 @@ const setupWebsocket = (ws) => {
       //websocket.send('something'); // send a message
     };
   
-    ws.onmessage = (e) => {
+    ws.onmessage = async (e) => {
       let data = JSON.parse(e.data);
-      console.log(`message data : ${JSON.stringify(data)}`);
+      
+      if(data.relogin === true) {
+        console.log('재 로그인 입니다!');
+        try {
+          await AsyncStorage.setItem("relogin", String(data.relogin));
+        } catch (err){
+          console.log('relogin flag 저장 에러', err);
+        }
+      }
     }
     
     

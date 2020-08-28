@@ -4,6 +4,7 @@ import { GiftedChat } from 'react-native-gifted-chat';
 import { getChatLog } from '../../api/chatAPI';
 import { useAuthStore } from "../../store/authContext"
 import { Avatar } from 'react-native-paper';
+import AsyncStorage from "@react-native-community/async-storage";
 
 export const ChatDetail = ({ route, navigation }) => {
   const { receiverName, receiverId } = route.params;
@@ -62,8 +63,9 @@ export const ChatDetail = ({ route, navigation }) => {
     sendSocket(message);
   }, [])
  
-  const sendSocket = (message) => {
+  const sendSocket = async (message) => {
     let json_message = {};
+    
 
     switch(sendType) {
       case 'INITIAL':
@@ -75,7 +77,15 @@ export const ChatDetail = ({ route, navigation }) => {
         }
         break;
       case 'MESSAGE':
+        let reloginFlag = null;
+        try {
+          reloginFlag = await AsyncStorage.getItem("relogin") === "true" ? true : false;
+        } catch (e) {
+          console.log(e);
+        }
+        
         json_message = {
+          relogin: reloginFlag,
           type: sendType,
           message: message,
           room_id: roomId,
