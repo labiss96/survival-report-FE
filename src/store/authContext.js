@@ -11,11 +11,13 @@ const AuthProvider = ({ children }) => {
     userToken: null,
     userId: '',
     websocket: null,
+    wsCallback: null,
 
     retrieve: async () => {
       try {
         store.userToken = await AsyncStorage.getItem("userToken");
         store.userId = await AsyncStorage.getItem("userId");
+        store.wsCallback = null;
         return store.userToken;
       } catch (e) {
         console.log(e);
@@ -38,6 +40,7 @@ const AuthProvider = ({ children }) => {
         await AsyncStorage.removeItem("userId");
         store.userToken = null;
         store.userId = '';
+        store.wsCallback = null;
       } catch (e) {
         console.log(e);
       }
@@ -50,29 +53,45 @@ const AuthProvider = ({ children }) => {
       store.isLoading = boolean;
     },
 
+    setCallback: (callback) => {
+      store.wsCallback = callback;
+    },
+
     initWebsocket: async (sender_id) => {
-      console.log('============================이건 호출 되냐???', sender_id);
 
       let ws = new WebSocket(`ws://192.168.0.4:8088/ws/chat/${sender_id}`);
-      ws = await setupWebsocket(ws);
-
-      console.log('init 소켓 잘 끝???', ws);
+      ws = await setupWebsocket(ws, store.wsCallback);
+      console.log('init websocket', ws);
 
       store.websocket = ws;
     },
 
-    messageCallback: (callback) => {
-      store.websocket.onmessage = (e) => {
-        console.log('websocket onmessage event! > ', e.data);
-        if(callback !== null) {
-          callback(e.data);
-        }
-      }
-    },
+    //messageCallback: (callback) => {
+    //  store.websocket.onmessage = (e) => {
+    //    console.log('websocket onmessage event! > ', e.data);
+        
+    //    let data = JSON.parse(e.data);
+      
+    //    if(data.relogin === true) {
+    //      console.log('재 로그인 입니다!');
+    //      try {
+    //        await AsyncStorage.setItem("relogin", String(data.relogin));
+    //      } catch (err){
+    //        console.log('relogin flag 저장 에러', err);
+    //      }
+    //    }
+
+    //    if(callback !== null) {
+    //      store.wsCallback(e.data);
+    //    }
+    //  }
+    //},
 
     sendMessage: (data) => {
-      console.log(`run send message > ${JSON.stringify(data)}`);
-      store.websocket.send(JSON.stringify(data));
+      let jsonData = JSON.stringify(data);
+      console.log(`run send message > ${jsonData}`);
+
+      store.websocket.send(jsonData);
     },
 
     socketReport: () => {
@@ -89,15 +108,11 @@ const AuthProvider = ({ children }) => {
   );
 };
 
-const setupWebsocket = (ws) => {
-  console.log("wswswswswsws >>",ws);
-  
-  try{
+const setupWebsocket = (ws, callback) => {
 
+  try {
     ws.onopen = () => {
-      // connection opened
       console.log('open websocket!');
-      //websocket.send('something'); // send a message
     };
   
     ws.onmessage = async (e) => {
@@ -111,6 +126,12 @@ const setupWebsocket = (ws) => {
           console.log('relogin flag 저장 에러', err);
         }
       }
+
+      if(callback !== null) {
+        return;
+      }
+      
+      callback(data);
     }
     
     
@@ -124,12 +145,6 @@ const setupWebsocket = (ws) => {
       // connection closed
       console.log(e.code, e.reason);
     };
-  
-    //ws.onmessage = (e) => {
-    //  console.log('get message event !!! > ', JSON.stringify(e.data));
-    //  //setMessages(prevState => [...prevState, e.data]);
-    //}
-    console.log('setup 함수 잘 끝??', ws);
     return ws;
   } catch (e) {
     console.log('error !!!', e);

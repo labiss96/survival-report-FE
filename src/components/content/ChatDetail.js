@@ -31,9 +31,9 @@ export const ChatDetail = ({ route, navigation }) => {
   }
 
   const renderNewMessage = async (message) => {
-    
+
     let parseMessage = JSON.parse(message);
-    console.log('this is render message[parse] >>', parseMessage);
+    console.log('ChatDetail :: onmessage callback >>', parseMessage);
     
     sendType = 'MESSAGE';
     roomId = parseMessage.room_id;
@@ -49,7 +49,7 @@ export const ChatDetail = ({ route, navigation }) => {
   useEffect(() => {
     navigation.addListener('focus', () => {
       initChat();
-      store.messageCallback(renderNewMessage);
+      store.setCallback(renderNewMessage);
     });
   }, [navigation]);
 

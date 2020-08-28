@@ -46,14 +46,14 @@ export const ChatList = ({ navigation }) => {
 
   const renderNewChat = (message) => {
     let parseMessage = JSON.parse(message);
-    console.log('this is render message[parse] :: ChatList >>', parseMessage);
+    console.log('ChatList :: onmessage callback >>', parseMessage);
     getChatData();
   }
 
   useEffect(() => {
     navigation.addListener('focus', () => {
       getChatData();
-      store.messageCallback(renderNewChat);
+      store.setCallback(renderNewChat);
     });
     //const unsubscribe = 
     //return unsubscribe;
