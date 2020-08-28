@@ -13,26 +13,39 @@ export const ChatDetail = ({ route, navigation }) => {
   let sendType = '';
   let roomId = '';
   
+  useEffect(() => {
+    if(messages.length !== 0) {
+      sendType = 'MESSAGE';
+    } else {
+      sendType = 'INITIAL';
+    }
+  }, [messages])
 
   const initChat = async () => {
     console.log('this is userID:', store.userId);
     await getChatLog(store.userId, receiverId).then(result => {
       console.log('get chatting log data >> ', result.data);
+
       if(result.data.messages.length !== 0) {
         sendType = 'MESSAGE';
         roomId = result.data.messages[0].room_id;
       } else {
         sendType = 'INITIAL';
       }
+    
       setMessages(result.data.messages);
     })
   }
 
   const renderNewMessage = (message) => {
-    console.log('this is render message >>', message);
-    console.log('this is render message[parse] >>', JSON.parse(message));
     
-    setMessages(previousMessages => GiftedChat.append(previousMessages, JSON.parse(message)))
+    let parseMessage = JSON.parse(message);
+    console.log('this is render message[parse] >>', parseMessage);
+    
+    sendType = 'MESSAGE';
+    roomId = parseMessage.room_id;
+
+    setMessages(previousMessages => GiftedChat.append(previousMessages, parseMessage))
   }
 
   //화면 포커스 이벤트처리 메서드
