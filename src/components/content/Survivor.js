@@ -7,6 +7,7 @@ import {
   IconButton,
   Colors,
 } from "react-native-paper";
+import { useAuthStore } from "../../store/authContext"
 
 import {
   widthPercentageToDP as wp,
@@ -96,6 +97,7 @@ const ListView = ({ elem, index, navigation }) => {
 };
 
 export const Survivor = ({ navigation }) => {
+  const store = useAuthStore();
   const [survivors, setSurvivors] = useState([]);
 
   const getSurvivorList = async () => {
@@ -105,9 +107,20 @@ export const Survivor = ({ navigation }) => {
     });
   };
 
-  useEffect(() => {
+  const refreshCallback = (message) => {
+    console.log('run survivor list callback!');
     getSurvivorList();
-  }, []);
+  }
+
+  useEffect(() => {
+    navigation.addListener('focus', () => {
+      console.log('생존자리스트 focus 됨');
+      getSurvivorList();
+      store.setCallback(refreshCallback);
+    });
+    //const unsubscribe = 
+    //return unsubscribe;
+  }, [navigation]);
 
   return (
     <ScreenContainer>

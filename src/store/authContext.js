@@ -60,7 +60,7 @@ const AuthProvider = ({ children }) => {
 
     initWebsocket: async (sender_id) => {
 
-      let ws = new WebSocket(`ws://192.168.0.4:8088/ws/chat/${sender_id}`);
+      let ws = new WebSocket(`ws://192.168.0.6:8088/ws/chat/${sender_id}`);
       ws = await setupWebsocket(ws, store.wsCallback);
       console.log('init websocket', ws);
 
@@ -100,7 +100,12 @@ const AuthProvider = ({ children }) => {
       let reportMsg = {
         type: "REPORT"
       }
-      store.websocket.send(JSON.stringify(reportMsg));
+      try {
+        store.websocket.send(JSON.stringify(reportMsg));
+        store.setReport(true);
+      } catch(e) {
+        console.log('send report error >>', e)
+      }
     }
   }));
 
@@ -108,6 +113,8 @@ const AuthProvider = ({ children }) => {
     <AuthContext.Provider value={store}>{children}</AuthContext.Provider>
   );
 };
+
+const useAuthStore = () => React.useContext(AuthContext);
 
 const setupWebsocket = (ws, callback) => {
 
@@ -134,12 +141,19 @@ const setupWebsocket = (ws, callback) => {
           break;
         case 'REPORT':
           console.log('message_type :: REPORT');
+          console.log('누가 신고한거야 >>', data.reporter);
+          let userId = await AsyncStorage.getItem("userId");
+          console.log('가져온 user ID :', userId);
+          if(data.reporter !== Number(userId)) {
+            callback(data);
+          }
+          
           break;
         case 'MESSAGE':
           console.log('message_type :: MESSAGE');
-          if(callback !== null) {
-            return;
-          }
+          //if(callback !== null) {
+          //  return;
+          //}
           callback(data);
           break;
 
@@ -166,6 +180,6 @@ const setupWebsocket = (ws, callback) => {
   
 }
 
-const useAuthStore = () => React.useContext(AuthContext);
+
 
 export {AuthProvider, useAuthStore}

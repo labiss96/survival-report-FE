@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
   Button,
 } from "react-native";
@@ -13,8 +12,6 @@ import {
 } from "react-native-responsive-screen";
 
 import { useAuthStore } from "../../store/authContext";
-import AsyncStorage from "@react-native-community/async-storage";
-import { onCreate } from "../../api/survivorAPI";
 
 const styles = StyleSheet.create({
   container: {
@@ -82,9 +79,7 @@ export const Home = ({ navigation }) => {
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => {
-          reportHandling();
-        }}
+        onPress={reportHandling}
       >
         <Text style={styles.buttonTitle}>생존신고!</Text>
       </TouchableOpacity>

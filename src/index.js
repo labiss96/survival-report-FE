@@ -24,6 +24,7 @@ import Progress from "./components/Progress";
 import { useAuthStore } from "./store/authContext";
 import { useObserver } from "mobx-react";
 
+
 const SurvivorStack = createStackNavigator();
 const SurvivorStackScreen = () => (
   <SurvivorStack.Navigator>
@@ -152,7 +153,7 @@ const RootStackScreen = () => {
   
   return useObserver(() => (
     <RootStack.Navigator headerMode="none">
-      {store.userToken ? (
+      {store.userToken !== null ? (
         <>
           {store.reportFlag ? (
             <RootStack.Screen
@@ -196,17 +197,23 @@ export default () => {
     })
   }
 
+  const initAuth = async () => {
+    await retrieve();
+      
+    if(userToken) {
+      console.log('async storage에 유저토큰이 존재하므로 유효성 체크 실행 ::', userToken);
+      reconnectSocket();
+    } else {
+      console.log('유저토큰 null');
+    }
+  }
+
   useEffect(() => {
     setReport(false);
-    
+    initAuth();
+
     setTimeout(() => {
-      retrieve();
-      if(userToken) {
-        console.log('async storage에 유저토큰이 존재하므로 유효성 체크 실행 ::', userToken);
-        reconnectSocket();
-      } else {
-        console.log('유저토큰 null');
-      }
+      
       //setIsLoading(true);
     }, 1000);
   }, []);
