@@ -8,6 +8,7 @@ import {
 import { theme } from '../../core/theme';
 
 import { onLogin } from "../../api/authAPI";
+
 import { useAuthStore } from "../../store/authContext";
 import Background from "../common/Background";
 import TextInput from '../common/TextInput';
@@ -31,7 +32,10 @@ export const Login = ({ navigation }) => {
         console.log(`successfully logined`, result);
 
         await store.signIn(result.data.token, result.data.userId);
+        console.log('로그인 잘 됬고,', result.data.userId);
+
         await store.initWebsocket(result.data.userId);
+        console.log('소켓객체는 ???', store.websocket)
 
         console.log('[Login.js]저장된 유저토큰 : ', store.userToken); 
       })

@@ -49,42 +49,23 @@ const AuthProvider = ({ children }) => {
       store.isLoading = boolean;
     },
 
-    initWebsocket: (sender_id) => {
-      store.websocket = new WebSocket(`ws://172.30.1.15/ws/chat/${sender_id}`);
-      
-      store.websocket.onopen = () => {
-        // connection opened
-        console.log('open websocket!');
-        //websocket.send('something'); // send a message
-      };
-  
-      store.websocket.onmessage = (e) => {
-        let data = JSON.parse(e.data);
-        console.log(`message data : ${JSON.stringify(data)}`);
-      }
-      
-      
-      store.websocket.onerror = (e) => {
-        // an error occurred
-        console.log(e.message);
-        console.log('websocket ERROR >> ', JSON.stringify(e));
-      };
-      
-      store.websocket.onclose = (e) => {
-        // connection closed
-        console.log(e.code, e.reason);
-      };
+    initWebsocket: async (sender_id) => {
+      console.log('============================이건 호출 되냐???', sender_id);
 
-      store.websocket.onmessage = (e) => {
-        console.log('get message event !!! > ', JSON.stringify(e.data));
-        //setMessages(prevState => [...prevState, e.data]);
-      }
-      console.log(`====== store websocket ====> ${store.websocket}`);
+      let ws = new WebSocket(`ws://172.30.1.21:8088/ws/chat/${sender_id}`);
+      ws = await setupWebsocket(ws);
+
+      console.log('init 소켓 잘 끝???', ws);
+
+      store.websocket = ws;
     },
 
     messageCallback: (callback) => {
       store.websocket.onmessage = (e) => {
-        callback(e.data);
+        console.log('websocket onmessage event! > ', e.data);
+        if(callback !== null) {
+          callback(e.data);
+        }
       }
     },
 
@@ -98,6 +79,46 @@ const AuthProvider = ({ children }) => {
     <AuthContext.Provider value={store}>{children}</AuthContext.Provider>
   );
 };
+
+const setupWebsocket = (ws) => {
+  console.log("wswswswswsws >>",ws);
+  
+  try{
+
+    ws.onopen = () => {
+      // connection opened
+      console.log('open websocket!');
+      //websocket.send('something'); // send a message
+    };
+  
+    ws.onmessage = (e) => {
+      let data = JSON.parse(e.data);
+      console.log(`message data : ${JSON.stringify(data)}`);
+    }
+    
+    
+    ws.onerror = (e) => {
+      // an error occurred
+      console.log(e.message);
+      console.log('websocket ERROR >> ', JSON.stringify(e));
+    };
+    
+    ws.onclose = (e) => {
+      // connection closed
+      console.log(e.code, e.reason);
+    };
+  
+    //ws.onmessage = (e) => {
+    //  console.log('get message event !!! > ', JSON.stringify(e.data));
+    //  //setMessages(prevState => [...prevState, e.data]);
+    //}
+    console.log('setup 함수 잘 끝??', ws);
+    return ws;
+  } catch (e) {
+    console.log('error !!!', e);
+  }  
+  
+}
 
 const useAuthStore = () => React.useContext(AuthContext);
 
