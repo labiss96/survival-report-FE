@@ -17,8 +17,6 @@ export const Login = ({ navigation }) => {
   const [password, setPassword] = useState({ value: '', error: '' });
 
   const handlingLogin = async () => {
-    //console.log(`email : ${email}`);
-    //console.log(`pw : ${password}`);
 
     const emailError = emailValidator(email.value);
     const passwordError = passwordValidator(password.value);
