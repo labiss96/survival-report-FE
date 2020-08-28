@@ -17,17 +17,6 @@ import {
 import { useAuthStore } from "../../store/authContext"
 import { getChatList } from '../../api/chatAPI';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-    paddingLeft: wp("10%"),
-    paddingRight: wp("10%"),
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
-
 const ChatView = ({ receiverName, description, receiverId, sendDate, navigation }) => (
   <List.Item
     title={receiverName}
@@ -38,7 +27,7 @@ const ChatView = ({ receiverName, description, receiverId, sendDate, navigation 
       navigation.navigate("Chat", {
         screen: "ChatDetail",
         params: {
-          title: name,
+          title: receiverName,
           receiverId: receiverId,
           receiverName: receiverName,
         },

@@ -13,14 +13,6 @@ export const ChatDetail = ({ route, navigation }) => {
   const [messages, setMessages] = useState([]);
   let sendType = '';
   let roomId = '';
-  
-  useEffect(() => {
-    if(messages.length !== 0) {
-      sendType = 'MESSAGE';
-    } else {
-      sendType = 'INITIAL';
-    }
-  }, [messages])
 
   const initChat = async () => {
     console.log('this is userID:', store.userId);

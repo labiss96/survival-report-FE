@@ -16,6 +16,7 @@ const AuthProvider = ({ children }) => {
       try {
         store.userToken = await AsyncStorage.getItem("userToken");
         store.userId = await AsyncStorage.getItem("userId");
+        return store.userToken;
       } catch (e) {
         console.log(e);
       }

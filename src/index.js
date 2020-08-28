@@ -7,7 +7,7 @@ import { createStackNavigator, Assets } from "@react-navigation/stack";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { MaterialCommunityIcons as Icon } from "react-native-vector-icons";
 
-//import { AuthContext, SocketContext } from "./context";
+import { checkValidation } from "./api/authAPI";
 
 import { Login } from "./components/auth/Login";
 import { Register } from "./components/auth/Register";
@@ -184,16 +184,22 @@ const RootStackScreen = () => {
 
 export default () => {
 
-  const { setIsLoading, setReport, retrieve, } = useAuthStore();
+  const { setIsLoading, setReport, retrieve, userToken, initWebsocket } = useAuthStore();
 
-  //const { reportFlag, token } = useAuthData();
+  const reconnectSocket = async () => {
+    await checkValidation().then(result => {
+      initWebsocket(result.data.user.id);
+    })
+  }
 
   useEffect(() => {
     setReport(false);
     
     setTimeout(() => {
-      retrieve();
-      setIsLoading(true);
+      if(retrieve()) {
+        reconnectSocket();
+      }
+      //setIsLoading(true);
     }, 1000);
   }, []);
 
