@@ -185,11 +185,14 @@ const RootStackScreen = () => {
 
 export default () => {
 
-  const { setIsLoading, setReport, retrieve, userToken, initWebsocket } = useAuthStore();
+  const { setIsLoading, setReport, retrieve, initWebsocket, signOut, userToken} = useAuthStore();
 
   const reconnectSocket = async () => {
     await checkValidation().then(result => {
       initWebsocket(result.data.user.id);
+    }).catch(err => {
+      console.log(err);
+      signOut();
     })
   }
 
@@ -197,8 +200,12 @@ export default () => {
     setReport(false);
     
     setTimeout(() => {
-      if(retrieve()) {
+      retrieve();
+      if(userToken) {
+        console.log('async storage에 유저토큰이 존재하므로 유효성 체크 실행 ::', userToken);
         reconnectSocket();
+      } else {
+        console.log('유저토큰 null');
       }
       //setIsLoading(true);
     }, 1000);

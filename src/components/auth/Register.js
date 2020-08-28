@@ -10,53 +10,7 @@ import Background from "../common/Background";
 import TextInput from '../common/TextInput';
 import { Keyboard } from 'react-native'
 
-
 import Progress from "../Progress";
-
-//const styles = StyleSheet.create({
-//  container: {
-//    flex: 1,
-//    // backgroundColor: "white",
-//    paddingLeft: wp("10%"),
-//    paddingRight: wp("10%"),
-//    // justifyContent: "center",
-//    alignItems: "center",
-//  },
-//  titleArea: {
-//    width: "100%",
-//    paddingTop: wp("10%"),
-//    paddingBottom: wp("10%"),
-//    alignItems: "center",
-//  },
-//  title: {
-//    fontSize: wp("8%"),
-//  },
-//  formArea: {
-//    width: "100%",
-//    paddingBottom: wp("5%"),
-//  },
-//  textForm: {
-//    width: "100%",
-//    paddingLeft: 5,
-//    paddingRight: 5,
-//    marginBottom: 15,
-//  },
-//  buttonArea: {
-//    width: "70%",
-//    height: 35,
-//  },
-//  button: {
-//    backgroundColor: "#46c3ad",
-//    width: "100%",
-//    height: "100%",
-//    justifyContent: "center",
-//    alignItems: "center",
-//  },
-//  buttonTitle: {
-//    color: "white",
-//  },
-//});
-
 
 export const Register = ({ navigation }) => {
   

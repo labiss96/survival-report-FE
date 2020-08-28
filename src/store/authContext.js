@@ -18,7 +18,6 @@ const AuthProvider = ({ children }) => {
         store.userToken = await AsyncStorage.getItem("userToken");
         store.userId = await AsyncStorage.getItem("userId");
         store.wsCallback = null;
-        return store.userToken;
       } catch (e) {
         console.log(e);
       }
@@ -35,12 +34,14 @@ const AuthProvider = ({ children }) => {
       }
     },
     signOut: async () => {
+      console.log('run signout!');
       try {
         await AsyncStorage.removeItem("userToken");
         await AsyncStorage.removeItem("userId");
         store.userToken = null;
         store.userId = '';
         store.wsCallback = null;
+        
       } catch (e) {
         console.log(e);
       }
@@ -117,23 +118,36 @@ const setupWebsocket = (ws, callback) => {
   
     ws.onmessage = async (e) => {
       let data = JSON.parse(e.data);
-      
-      if(data.relogin === true) {
-        console.log('재 로그인 입니다!');
-        try {
-          await AsyncStorage.setItem("relogin", String(data.relogin));
-        } catch (err){
-          console.log('relogin flag 저장 에러', err);
-        }
-      }
+      console.log('onmessage event trigger >>', data);
 
-      if(callback !== null) {
-        return;
+      switch(data.message_type) {
+        case 'SYSTEM':
+          console.log('message_type :: SYSTEM');
+          if(data.relogin === true) {
+            console.log('재 로그인 입니다!');
+            try {
+              await AsyncStorage.setItem("relogin", String(data.relogin));
+            } catch (err){
+              console.log('relogin flag 저장 에러', err);
+            }
+          }
+          break;
+        case 'REPORT':
+          console.log('message_type :: REPORT');
+          break;
+        case 'MESSAGE':
+          console.log('message_type :: MESSAGE');
+          if(callback !== null) {
+            return;
+          }
+          callback(data);
+          break;
+
+        default:
+          console.log('WRONG message type!');
       }
       
-      callback(data);
     }
-    
     
     ws.onerror = (e) => {
       // an error occurred

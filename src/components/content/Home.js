@@ -61,16 +61,17 @@ export const Home = ({ navigation }) => {
     console.log('report state >> ', store.reportFlag)
   });
 
-  const reportHandling = async () => {
-    let userId = await AsyncStorage.getItem("userId");
-    await onCreate({ userId: userId })
-      .then((result) => {
-        console.log(result);
-        alert("생존신고 완료!");
-        store.setReport(true);
-        store.socketReport();
-      })
-      .catch((err) => console.log(err));
+  const reportHandling = () => {
+    store.socketReport();
+    //let userId = await AsyncStorage.getItem("userId");
+    //await onCreate({ userId: userId })
+    //  .then((result) => {
+    //    console.log(result);
+    //    alert("생존신고 완료!");
+    //    store.setReport(true);
+    //    store.socketReport();
+    //  })
+    //  .catch((err) => console.log(err));
   };
 
   return (

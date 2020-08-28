@@ -11,11 +11,14 @@ export const ChatDetail = ({ route, navigation }) => {
   const store = useAuthStore();
   
   const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
   let sendType = '';
   let roomId = '';
 
   const initChat = async () => {
     console.log('this is userID:', store.userId);
+    //setIsLoading()
     await getChatLog(store.userId, receiverId).then(result => {
       console.log('get chatting log data >> ', result.data);
 
