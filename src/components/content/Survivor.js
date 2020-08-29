@@ -19,12 +19,9 @@ import { getReports } from "../../api/survivorAPI";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "white",
     paddingTop: wp("10%"),
     paddingLeft: wp("10%"),
     paddingRight: wp("10%"),
-    // justifyContent: "center",
-    // alignItems: "center",
   },
   badge: {
     backgroundColor: "blue",
@@ -34,9 +31,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const ScreenContainer = ({ children }) => (
-  <View style={styles.container}>{children}</View>
-);
 
 const ListView = ({ elem, index, navigation }) => {
   let component = "";
@@ -123,18 +117,15 @@ export const Survivor = ({ navigation }) => {
   }, [navigation]);
 
   return (
-    <ScreenContainer>
-      {survivors.map((elem, index) => (
-        <>
+    <List.Section>
+      {survivors.map((elem, key) => (
           <ListView
-            key={`listview-${index}`}
+            key={key}
             elem={elem}
-            index={index + 1}
+            index={key + 1}
             navigation={navigation}
           />
-          <Divider/>
-        </>
       ))}
-    </ScreenContainer>
+    </List.Section>
   );
 };

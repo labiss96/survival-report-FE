@@ -3,6 +3,7 @@ import { useLocalStore, useObserver } from "mobx-react";
 import AsyncStorage from "@react-native-community/async-storage";
 
 const AuthContext = React.createContext();
+let callback = null;
 
 const AuthProvider = ({ children }) => {
   const store = useLocalStore(() => ({
@@ -11,13 +12,12 @@ const AuthProvider = ({ children }) => {
     userToken: null,
     userId: '',
     websocket: null,
-    wsCallback: null,
 
     retrieve: async () => {
       try {
         store.userToken = await AsyncStorage.getItem("userToken");
         store.userId = await AsyncStorage.getItem("userId");
-        store.wsCallback = null;
+        callback = null;
       } catch (e) {
         console.log(e);
       }
@@ -40,7 +40,7 @@ const AuthProvider = ({ children }) => {
         await AsyncStorage.removeItem("userId");
         store.userToken = null;
         store.userId = '';
-        store.wsCallback = null;
+        callback = null;
         
       } catch (e) {
         console.log(e);
@@ -55,13 +55,13 @@ const AuthProvider = ({ children }) => {
     },
 
     setCallback: (callback) => {
-      store.wsCallback = callback;
+      callback = callback;
     },
 
     initWebsocket: async (sender_id) => {
 
-      let ws = new WebSocket(`ws://192.168.0.6:8088/ws/chat/${sender_id}`);
-      ws = await setupWebsocket(ws, store.wsCallback);
+      let ws = new WebSocket(`ws://192.168.0.14:8088/ws/chat/${sender_id}`);
+      ws = await setupWebsocket(ws, callback);
       console.log('init websocket', ws);
 
       store.websocket = ws;
