@@ -7,7 +7,9 @@ import { Avatar } from 'react-native-paper';
 import AsyncStorage from "@react-native-community/async-storage";
 
 export const ChatDetail = ({ route, navigation }) => {
-  const { receiverName, receiverId } = route.params;
+  const { receiverId } = route.params;
+  //const receiverId = navigation.getParam('receiverId', 0);
+
   const store = useAuthStore();
   
   const [messages, setMessages] = useState([]);
@@ -17,9 +19,9 @@ export const ChatDetail = ({ route, navigation }) => {
   let roomId = '';
 
   const initChat = async () => {
-    console.log('this is userID:', store.userId);
+    console.log('this is receiver ID:', route.params.receiverId);
     //setIsLoading()
-    await getChatLog(store.userId, receiverId).then(result => {
+    await getChatLog(store.userId, route.params.receiverId).then(result => {
       console.log('get chatting log data >> ', result.data);
 
       let messageList = result.data.messages;

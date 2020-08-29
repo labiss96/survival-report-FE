@@ -62,7 +62,7 @@ const AuthProvider = ({ children }) => {
 
     initWebsocket: async (sender_id) => {
 
-      let ws = new WebSocket(`ws://192.168.0.14:8088/ws/chat/${sender_id}`);
+      let ws = new WebSocket(`ws://ec2-52-79-250-70.ap-northeast-2.compute.amazonaws.com:8088/ws/chat/${sender_id}`);
       ws = await setupWebsocket(ws);
       console.log('init websocket', ws);
 

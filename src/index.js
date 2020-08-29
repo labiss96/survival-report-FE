@@ -61,10 +61,11 @@ const ChatStackScreen = () => (
             color={Colors.grey700}
             size={20}
             animated={true}
-            onPress={() =>
-              navigation.navigate("Chat", {
-                screen: "ChatList",
-              })
+            onPress={() => {
+                navigation.navigate("Chat", {
+                  screen: "ChatList",
+                });
+              }
             }
           />
         ),

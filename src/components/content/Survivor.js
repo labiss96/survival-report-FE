@@ -50,7 +50,7 @@ const ListView = ({ elem, index, navigation }) => {
                 onPress={() =>
                   navigation.navigate("Chat", {
                     screen: "ChatDetail",
-                    params: { receiverName: elem.name, receiverName: elem.name, receiverId: elem.id },
+                    params: { title: elem.name, receiverName: elem.name, receiverId: elem.id },
                   })
                 }
               />
@@ -120,7 +120,7 @@ export const Survivor = ({ navigation }) => {
     <List.Section>
       {survivors.map((elem, key) => (
           <ListView
-            key={key}
+            key={Math.random()}
             elem={elem}
             index={key + 1}
             navigation={navigation}
