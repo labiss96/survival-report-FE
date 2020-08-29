@@ -35,16 +35,15 @@ export const ChatDetail = ({ route, navigation }) => {
 
   const renderNewMessage = async (message) => {
 
-    let parseMessage = JSON.parse(message);
-    console.log('ChatDetail :: onmessage callback >>', parseMessage);
+    console.log('ChatDetail :: onmessage callback >>', message);
     
     sendType = 'MESSAGE';
-    roomId = parseMessage.room_id;
+    roomId = message.room_id;
 
-    if(parseMessage.relogin !== null) {
-      await AsyncStorage.setItem("relogin", String(parseMessage.relogin));
+    if(message.relogin !== null) {
+      await AsyncStorage.setItem("relogin", String(message.relogin));
     } else {
-      setMessages(previousMessages => GiftedChat.append(previousMessages, parseMessage))  
+      setMessages(previousMessages => GiftedChat.append(previousMessages, message))  
     }
   }
 

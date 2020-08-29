@@ -45,14 +45,14 @@ export const ChatList = ({ navigation }) => {
   }
 
   const renderNewChat = (message) => {
-    let parseMessage = JSON.parse(message);
-    console.log('ChatList :: onmessage callback >>', parseMessage);
+    console.log('ChatList :: onmessage callback >>', message);
     getChatData();
   }
 
   useEffect(() => {
     navigation.addListener('focus', () => {
       getChatData();
+      console.log('chat list 콜백 등록됬어?');
       store.setCallback(renderNewChat);
     });
     //const unsubscribe = 

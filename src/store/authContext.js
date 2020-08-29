@@ -3,7 +3,7 @@ import { useLocalStore, useObserver } from "mobx-react";
 import AsyncStorage from "@react-native-community/async-storage";
 
 const AuthContext = React.createContext();
-let callback = null;
+
 
 const AuthProvider = ({ children }) => {
   const store = useLocalStore(() => ({
@@ -12,12 +12,13 @@ const AuthProvider = ({ children }) => {
     userToken: null,
     userId: '',
     websocket: null,
+    callback: null,
 
     retrieve: async () => {
       try {
         store.userToken = await AsyncStorage.getItem("userToken");
         store.userId = await AsyncStorage.getItem("userId");
-        callback = null;
+        store.callback = null;
       } catch (e) {
         console.log(e);
       }
@@ -40,7 +41,7 @@ const AuthProvider = ({ children }) => {
         await AsyncStorage.removeItem("userId");
         store.userToken = null;
         store.userId = '';
-        callback = null;
+        store.callback = null;
         
       } catch (e) {
         console.log(e);
@@ -55,14 +56,56 @@ const AuthProvider = ({ children }) => {
     },
 
     setCallback: (callback) => {
-      callback = callback;
+      console.log('callback 등록!');
+      store.callback = callback;
     },
 
     initWebsocket: async (sender_id) => {
 
       let ws = new WebSocket(`ws://192.168.0.14:8088/ws/chat/${sender_id}`);
-      ws = await setupWebsocket(ws, callback);
+      ws = await setupWebsocket(ws);
       console.log('init websocket', ws);
+
+      ws.onmessage = async (e) => {
+        let data = JSON.parse(e.data);
+        console.log('onmessage event trigger >>', data);
+  
+        switch(data.message_type) {
+          case 'SYSTEM':
+            console.log('message_type :: SYSTEM');
+            if(data.relogin === true) {
+              console.log('재 로그인 입니다!');
+              try {
+                await AsyncStorage.setItem("relogin", String(data.relogin));
+              } catch (err){
+                console.log('relogin flag 저장 에러', err);
+              }
+            }
+            break;
+          case 'REPORT':
+            console.log('message_type :: REPORT');
+            console.log('누가 신고한거야 >>', data.reporter);
+            let userId = await AsyncStorage.getItem("userId");
+            console.log('가져온 user ID :', userId);
+            if(data.reporter !== Number(userId)) {
+              if(store.callback !== null) {
+                store.callback(data);
+              }
+            }
+            
+            break;
+          case 'MESSAGE':
+            console.log('message_type :: MESSAGE');
+            if(store.callback !== null) {
+              store.callback(data);
+            }
+            break;
+  
+          default:
+            console.log('WRONG message type!');
+        }
+        
+      }
 
       store.websocket = ws;
     },
@@ -116,52 +159,52 @@ const AuthProvider = ({ children }) => {
 
 const useAuthStore = () => React.useContext(AuthContext);
 
-const setupWebsocket = (ws, callback) => {
+const setupWebsocket = (ws) => {
 
   try {
     ws.onopen = () => {
       console.log('open websocket!');
     };
   
-    ws.onmessage = async (e) => {
-      let data = JSON.parse(e.data);
-      console.log('onmessage event trigger >>', data);
+    //ws.onmessage = async (e) => {
+    //  let data = JSON.parse(e.data);
+    //  console.log('onmessage event trigger >>', data);
 
-      switch(data.message_type) {
-        case 'SYSTEM':
-          console.log('message_type :: SYSTEM');
-          if(data.relogin === true) {
-            console.log('재 로그인 입니다!');
-            try {
-              await AsyncStorage.setItem("relogin", String(data.relogin));
-            } catch (err){
-              console.log('relogin flag 저장 에러', err);
-            }
-          }
-          break;
-        case 'REPORT':
-          console.log('message_type :: REPORT');
-          console.log('누가 신고한거야 >>', data.reporter);
-          let userId = await AsyncStorage.getItem("userId");
-          console.log('가져온 user ID :', userId);
-          if(data.reporter !== Number(userId)) {
-            callback(data);
-          }
+    //  switch(data.message_type) {
+    //    case 'SYSTEM':
+    //      console.log('message_type :: SYSTEM');
+    //      if(data.relogin === true) {
+    //        console.log('재 로그인 입니다!');
+    //        try {
+    //          await AsyncStorage.setItem("relogin", String(data.relogin));
+    //        } catch (err){
+    //          console.log('relogin flag 저장 에러', err);
+    //        }
+    //      }
+    //      break;
+    //    case 'REPORT':
+    //      console.log('message_type :: REPORT');
+    //      console.log('누가 신고한거야 >>', data.reporter);
+    //      let userId = await AsyncStorage.getItem("userId");
+    //      console.log('가져온 user ID :', userId);
+    //      if(data.reporter !== Number(userId)) {
+    //        callback(data);
+    //      }
           
-          break;
-        case 'MESSAGE':
-          console.log('message_type :: MESSAGE');
-          //if(callback !== null) {
-          //  return;
-          //}
-          callback(data);
-          break;
+    //      break;
+    //    case 'MESSAGE':
+    //      console.log('message_type :: MESSAGE');
+    //      //if(callback !== null) {
+    //      //  return;
+    //      //}
+    //      callback(data);
+    //      break;
 
-        default:
-          console.log('WRONG message type!');
-      }
+    //    default:
+    //      console.log('WRONG message type!');
+    //  }
       
-    }
+    //}
     
     ws.onerror = (e) => {
       // an error occurred
