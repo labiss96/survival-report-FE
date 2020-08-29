@@ -22,14 +22,18 @@ export const ChatDetail = ({ route, navigation }) => {
     await getChatLog(store.userId, receiverId).then(result => {
       console.log('get chatting log data >> ', result.data);
 
-      if(result.data.messages.length !== 0) {
+      let messageList = result.data.messages;
+
+      if(messageList.length !== 0) {
         sendType = 'MESSAGE';
-        roomId = result.data.messages[0].room_id;
+        roomId = messageList[0].room_id;
       } else {
         sendType = 'INITIAL';
       }
-    
-      setMessages(result.data.messages);
+      messageList.forEach((msg, idx) => {
+        messageList[idx].createdAt = new Date(msg.createdAt);
+      });
+      setMessages(messageList);
     })
   }
 
@@ -45,7 +49,7 @@ export const ChatDetail = ({ route, navigation }) => {
     if(message.relogin) {
       await AsyncStorage.setItem("relogin", String(message.relogin));
     }
-    message.createdAt = new Date(message.createAt);
+    message.createdAt = new Date(message.createdAt);
     setMessages(previousMessages => GiftedChat.append(previousMessages, message))  
   }
 
