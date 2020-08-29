@@ -40,11 +40,13 @@ export const ChatDetail = ({ route, navigation }) => {
     sendType = 'MESSAGE';
     roomId = message.room_id;
 
-    if(message.relogin !== null) {
+    console.log(message.relogin);
+
+    if(message.relogin) {
       await AsyncStorage.setItem("relogin", String(message.relogin));
-    } else {
-      setMessages(previousMessages => GiftedChat.append(previousMessages, message))  
     }
+    message.createdAt = new Date(message.createAt);
+    setMessages(previousMessages => GiftedChat.append(previousMessages, message))  
   }
 
   //화면 포커스 이벤트처리 메서드
