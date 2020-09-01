@@ -50,14 +50,24 @@ export const ChatList = ({ navigation }) => {
   }
 
   useEffect(() => {
-    navigation.addListener('focus', () => {
+    const unsubscribe = navigation.addListener('focus', () => {
       getChatData();
-      console.log('chat list 콜백 등록됬어?');
+      console.log('focus ChatList!');
       store.setCallback(renderNewChat);
     });
-    //const unsubscribe = 
-    //return unsubscribe;
+  
+    return unsubscribe;
   }, [navigation]);
+
+  //useEffect(() => {
+  //  navigation.addListener('focus', () => {
+  //    getChatData();
+  //    console.log('chat list 콜백 등록됬어?');
+  //    store.setCallback(renderNewChat);
+  //  });
+  //  //const unsubscribe = 
+  //  //return unsubscribe;
+  //}, [navigation]);
   
   useEffect(() => {
     Keyboard.dismiss();

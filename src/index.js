@@ -84,7 +84,10 @@ const ChatStackScreen = () => (
 );
 
 const Tabs = createMaterialBottomTabNavigator();
-const TabsScreen = () => (
+const TabsScreen = () => {
+  const store = useAuthStore();
+
+  return (
   <Tabs.Navigator
     initialRouteName="Survivor"
     activeColor="#f0edf6"
@@ -114,13 +117,12 @@ const TabsScreen = () => (
       options={{
         title: "My Page",
         tabBarLabel: "My Page",
-        tabBarIcon: ({ color }) => (
-          <Icon name="account-circle" color={color} size={26} />
-        ),
+        tabBarIcon: ({ color }) => <Icon name="account-circle" color={color} size={26} />,
       }}
     />
   </Tabs.Navigator>
 );
+}
 
 const AuthStack = createStackNavigator();
 const AuthStackScreen = () => (

@@ -2,8 +2,24 @@ import React from 'react';
 import { useLocalStore, useObserver } from "mobx-react";
 import AsyncStorage from "@react-native-community/async-storage";
 
-const AuthContext = React.createContext();
+import { _URL } from "../config/severConfig";
 
+const AuthContext = React.createContext();
+// 소켓 메시지 중복응답 방지 변수
+let tempMessage = {};
+
+const isDuplicated = (obj, key, value) => {
+  
+  if(obj[key] !== undefined) {
+    console.log(`비교하는 값 (${value}) VS 비교당하는 값 (${obj[key]})`);
+    return obj[key] === value;
+  } else {
+    console.log(obj[key]); 
+    console.log('해당 키 값은 정의되지 않았습니다');
+    return false;
+  }
+  
+}
 
 const AuthProvider = ({ children }) => {
   const store = useLocalStore(() => ({
@@ -42,6 +58,7 @@ const AuthProvider = ({ children }) => {
         store.userToken = null;
         store.userId = '';
         store.callback = null;
+        store.reportFlag = false;
         
       } catch (e) {
         console.log(e);
@@ -62,14 +79,15 @@ const AuthProvider = ({ children }) => {
 
     initWebsocket: async (sender_id) => {
 
-      let ws = new WebSocket(`ws://ec2-52-79-250-70.ap-northeast-2.compute.amazonaws.com:8088/ws/chat/${sender_id}`);
+      let ws = new WebSocket(`ws://${_URL}ws/chat/${sender_id}`);
+      console.log(`WS server domain : ws://${_URL}ws/chat/${sender_id}`)
       ws = await setupWebsocket(ws);
       console.log('init websocket', ws);
 
       ws.onmessage = async (e) => {
         let data = JSON.parse(e.data);
         console.log('onmessage event trigger >>', data);
-  
+
         switch(data.message_type) {
           case 'SYSTEM':
             console.log('message_type :: SYSTEM');
@@ -95,9 +113,14 @@ const AuthProvider = ({ children }) => {
             
             break;
           case 'MESSAGE':
-            console.log('message_type :: MESSAGE');
-            if(store.callback !== null) {
-              store.callback(data);
+            if(isDuplicated(tempMessage, '_id', data._id)) {
+              console.log('중복된 소켓 응답 메시지입니다.');
+            } else {
+              console.log('message_type :: MESSAGE');
+              if(store.callback !== null) {
+                store.callback(data);
+                tempMessage = data;
+              }
             }
             break;
   
@@ -105,31 +128,11 @@ const AuthProvider = ({ children }) => {
             console.log('WRONG message type!');
         }
         
+        
       }
 
       store.websocket = ws;
     },
-
-    //messageCallback: (callback) => {
-    //  store.websocket.onmessage = (e) => {
-    //    console.log('websocket onmessage event! > ', e.data);
-        
-    //    let data = JSON.parse(e.data);
-      
-    //    if(data.relogin === true) {
-    //      console.log('재 로그인 입니다!');
-    //      try {
-    //        await AsyncStorage.setItem("relogin", String(data.relogin));
-    //      } catch (err){
-    //        console.log('relogin flag 저장 에러', err);
-    //      }
-    //    }
-
-    //    if(callback !== null) {
-    //      store.wsCallback(e.data);
-    //    }
-    //  }
-    //},
 
     sendMessage: (data) => {
       let jsonData = JSON.stringify(data);
@@ -166,46 +169,6 @@ const setupWebsocket = (ws) => {
       console.log('open websocket!');
     };
   
-    //ws.onmessage = async (e) => {
-    //  let data = JSON.parse(e.data);
-    //  console.log('onmessage event trigger >>', data);
-
-    //  switch(data.message_type) {
-    //    case 'SYSTEM':
-    //      console.log('message_type :: SYSTEM');
-    //      if(data.relogin === true) {
-    //        console.log('재 로그인 입니다!');
-    //        try {
-    //          await AsyncStorage.setItem("relogin", String(data.relogin));
-    //        } catch (err){
-    //          console.log('relogin flag 저장 에러', err);
-    //        }
-    //      }
-    //      break;
-    //    case 'REPORT':
-    //      console.log('message_type :: REPORT');
-    //      console.log('누가 신고한거야 >>', data.reporter);
-    //      let userId = await AsyncStorage.getItem("userId");
-    //      console.log('가져온 user ID :', userId);
-    //      if(data.reporter !== Number(userId)) {
-    //        callback(data);
-    //      }
-          
-    //      break;
-    //    case 'MESSAGE':
-    //      console.log('message_type :: MESSAGE');
-    //      //if(callback !== null) {
-    //      //  return;
-    //      //}
-    //      callback(data);
-    //      break;
-
-    //    default:
-    //      console.log('WRONG message type!');
-    //  }
-      
-    //}
-    
     ws.onerror = (e) => {
       // an error occurred
       console.log(e.message);

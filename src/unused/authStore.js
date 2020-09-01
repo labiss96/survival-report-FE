@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-community/async-storage";
-import { initWebSocket, sendMessage } from "../api/socket-config";
+import { initWebSocket, sendMessage } from "./socket-config";
 import { observable } from "mobx";
 
 export function createAuthStore () {

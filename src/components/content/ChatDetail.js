@@ -7,9 +7,8 @@ import { Avatar } from 'react-native-paper';
 import AsyncStorage from "@react-native-community/async-storage";
 
 export const ChatDetail = ({ route, navigation }) => {
-  const { receiverId } = route.params;
-  //const receiverId = navigation.getParam('receiverId', 0);
-
+  
+  const param = route.params;
   const store = useAuthStore();
   
   const [messages, setMessages] = useState([]);
@@ -19,9 +18,9 @@ export const ChatDetail = ({ route, navigation }) => {
   let roomId = '';
 
   const initChat = async () => {
-    console.log('this is receiver ID:', route.params.receiverId);
+    console.log(`'${store.userId}'와 '${param.receiverId}'의 채팅 내역을 가져온다.`)
     //setIsLoading()
-    await getChatLog(store.userId, route.params.receiverId).then(result => {
+    await getChatLog(store.userId, param.receiverId).then(result => {
       console.log('get chatting log data >> ', result.data);
 
       let messageList = result.data.messages;
@@ -41,7 +40,7 @@ export const ChatDetail = ({ route, navigation }) => {
 
   const renderNewMessage = async (message) => {
 
-    console.log('ChatDetail :: onmessage callback >>', message);
+    console.log('ChatDetail :: run onmessage callback');
     
     sendType = 'MESSAGE';
     roomId = message.room_id;
@@ -52,7 +51,9 @@ export const ChatDetail = ({ route, navigation }) => {
       await AsyncStorage.setItem("relogin", String(message.relogin));
     }
     message.createdAt = new Date(message.createdAt);
-    setMessages(previousMessages => GiftedChat.append(previousMessages, message))  
+
+    setMessages(previousMessages => GiftedChat.append(previousMessages, message));
+    
   }
 
   //화면 포커스 이벤트처리 메서드
@@ -78,7 +79,7 @@ export const ChatDetail = ({ route, navigation }) => {
         json_message = {
           type: sendType,
           message: message,
-          receiver_id: receiverId,
+          receiver_id: param.receiverId,
           sender_id: store.userId
         }
         break;
@@ -95,7 +96,7 @@ export const ChatDetail = ({ route, navigation }) => {
           type: sendType,
           message: message,
           room_id: roomId,
-          receiver_id: receiverId,
+          receiver_id: param.receiverId,
         }
         break;
       default:
