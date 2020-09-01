@@ -29,6 +29,8 @@ const AuthProvider = ({ children }) => {
     userId: '',
     websocket: null,
     callback: null,
+    receiverId: '',
+    receiverName: '',
 
     retrieve: async () => {
       try {
@@ -102,9 +104,7 @@ const AuthProvider = ({ children }) => {
             break;
           case 'REPORT':
             console.log('message_type :: REPORT');
-            console.log('누가 신고한거야 >>', data.reporter);
             let userId = await AsyncStorage.getItem("userId");
-            console.log('가져온 user ID :', userId);
             if(data.reporter !== Number(userId)) {
               if(store.callback !== null) {
                 store.callback(data);
@@ -152,6 +152,11 @@ const AuthProvider = ({ children }) => {
       } catch(e) {
         console.log('send report error >>', e)
       }
+    },
+
+    setReceiver: (id, name) => {
+      store.receiverId = id;
+      store.receiverId = name;
     }
   }));
 

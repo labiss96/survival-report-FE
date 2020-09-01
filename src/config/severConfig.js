@@ -8,7 +8,7 @@ switch(MODE) {
     break;
 
   case 'PRODUCT':
-    _URL = `ec2-3-34-194-140.ap-northeast-2.compute.amazonaws.com:${_PORT}/`;
+    _URL = `ec2-3-34-194-140.ap-northeast-2.compute.amazonaws.com:${_PORT}/`; 
     break;
 
   default:

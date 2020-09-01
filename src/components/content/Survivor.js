@@ -34,6 +34,8 @@ const styles = StyleSheet.create({
 
 const ListView = ({ elem, index, navigation }) => {
   let component = "";
+  const store = useAuthStore();
+
   switch (index) {
     case 1:
       component = (
@@ -47,12 +49,15 @@ const ListView = ({ elem, index, navigation }) => {
                 icon="chat"
                 color={Colors.red500}
                 size={20}
-                onPress={() =>
-                  navigation.navigate("Chat", {
-                    screen: "ChatDetail",
-                    params: { title: elem.name, receiverName: elem.name, receiverId: elem.id },
-                  })
-                }
+                onPress={() => {
+                  store.setReceiver(elem.id, elem.name);
+                  return (
+                    navigation.navigate("Chat", {
+                      screen: "ChatDetail",
+                      params: { title: elem.name },
+                    }
+                  ));
+                }}
               />
             )}
           />
@@ -75,12 +80,15 @@ const ListView = ({ elem, index, navigation }) => {
                 icon="chat"
                 color={Colors.red500}
                 size={20}
-                onPress={() =>
-                  navigation.navigate("Chat", {
-                    screen: "ChatDetail",
-                    params: { title: elem.name, receiverName: elem.name, receiverId: elem.id },
-                  })
-                }
+                onPress={() => {
+                  store.setReceiver(elem.id, elem.name);
+                  return (
+                    navigation.navigate("Chat", {
+                      screen: "ChatDetail",
+                      params: { title: elem.name },
+                    }
+                  ));
+                }}
               />
             )}
           />

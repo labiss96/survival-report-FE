@@ -10,29 +10,31 @@ import { List } from "react-native-paper";
 import { useAuthStore } from "../../store/authContext"
 import { getChatList } from '../../api/chatAPI';
 
-const useForceUpdate = () => useState()[1];
-
-const ChatView = ({ receiverName, description, receiverId, sendDate, navigation }) => (
-  <List.Item
-    title={receiverName}
-    description={description}
-    left={(props) => <List.Icon {...props} icon="account" />}
-    right={() => <Text>{String(sendDate)}</Text>}
-    onPress={() =>
-      navigation.navigate("Chat", {
-        screen: "ChatDetail",
-        params: {
-          title: receiverName,
-          receiverId: receiverId,
-          receiverName: receiverName,
-        },
-      })
-    }
-  />
-);
+const ChatView = ({ receiverName, description, receiverId, sendDate, navigation }) => {
+  const store = useAuthStore();
+  return (
+    <List.Item
+      title={receiverName}
+      description={description}
+      left={(props) => <List.Icon {...props} icon="account" />}
+      right={() => <Text>{String(sendDate)}</Text>}
+      onPress={() => {
+        store.setReceiver(receiverId, receiverName);
+        return (
+          navigation.navigate("Chat", {
+            screen: "ChatDetail",
+            params: {
+              title: receiverName,
+            },
+          })
+        );
+      }
+        
+      }
+    />);
+}
 
 export const ChatList = ({ navigation }) => {
-  const forceUpdate = useForceUpdate();
   const store = useAuthStore();
   const [chatData, setChatData] = useState([]);
 

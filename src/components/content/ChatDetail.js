@@ -8,7 +8,6 @@ import AsyncStorage from "@react-native-community/async-storage";
 
 export const ChatDetail = ({ route, navigation }) => {
   
-  const param = route.params;
   const store = useAuthStore();
   
   const [messages, setMessages] = useState([]);
@@ -18,9 +17,9 @@ export const ChatDetail = ({ route, navigation }) => {
   let roomId = '';
 
   const initChat = async () => {
-    console.log(`'${store.userId}'와 '${param.receiverId}'의 채팅 내역을 가져온다.`)
+    console.log(`'${store.userId}'와 '${store.receiverId}'의 채팅 내역을 가져온다.`)
     //setIsLoading()
-    await getChatLog(store.userId, param.receiverId).then(result => {
+    await getChatLog(store.userId, store.receiverId).then(result => {
       console.log('get chatting log data >> ', result.data);
 
       let messageList = result.data.messages;
@@ -79,7 +78,7 @@ export const ChatDetail = ({ route, navigation }) => {
         json_message = {
           type: sendType,
           message: message,
-          receiver_id: param.receiverId,
+          receiver_id: store.receiverId,
           sender_id: store.userId
         }
         break;
@@ -96,7 +95,7 @@ export const ChatDetail = ({ route, navigation }) => {
           type: sendType,
           message: message,
           room_id: roomId,
-          receiver_id: param.receiverId,
+          receiver_id: store.receiverId,
         }
         break;
       default:
