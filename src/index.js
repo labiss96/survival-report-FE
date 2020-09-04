@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useReducer } from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Button } from "react-native";
 import { IconButton, Colors } from "react-native-paper";
 
@@ -7,6 +7,7 @@ import { createStackNavigator, Assets } from "@react-navigation/stack";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { MaterialCommunityIcons as Icon } from "react-native-vector-icons";
 
+import { theme } from './core/theme';
 import { checkValidation } from "./api/authAPI";
 
 import { Login } from "./components/auth/Login";
@@ -32,7 +33,7 @@ const SurvivorStackScreen = () => (
       name="SurvivorList"
       component={Survivor}
       options={{
-        title: "Survivor List",
+        title: "생존자 순위",
       }}
     />
   </SurvivorStack.Navigator>
@@ -46,7 +47,7 @@ const ChatStackScreen = () => (
       name="ChatList"
       component={ChatList}
       options={{
-        title: "Chat List",
+        title: "채팅",
         headerLeft: null
       }}
     />
@@ -90,15 +91,14 @@ const TabsScreen = () => {
   return (
   <Tabs.Navigator
     initialRouteName="Survivor"
-    activeColor="#f0edf6"
-    inactiveColor="#3e2465"
-    barStyle={{ backgroundColor: "#46c3ad" }}
+    activeColor="#FFFFFF"
+    inactiveColor={theme.colors.inactive}
+    barStyle={{ backgroundColor: theme.colors.tab }}
   >
     <Tabs.Screen
       name="Survivor"
       component={SurvivorStackScreen}
       options={{
-        title: "Survivor List",
         tabBarLabel: "Survivors",
         tabBarIcon: ({ color }) => <Icon name="hail" color={color} size={26} />,
       }}
@@ -115,7 +115,7 @@ const TabsScreen = () => {
       name="MyPage"
       component={MyPage}
       options={{
-        title: "My Page",
+        title: "프로필",
         tabBarLabel: "My Page",
         tabBarIcon: ({ color }) => <Icon name="account-circle" color={color} size={26} />,
       }}

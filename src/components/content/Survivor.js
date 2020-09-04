@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import {
   List,
   Badge,
@@ -14,38 +14,30 @@ import {
 } from "react-native-responsive-screen";
 
 import { getReports } from "../../api/survivorAPI";
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: wp("10%"),
-    paddingLeft: wp("10%"),
-    paddingRight: wp("10%"),
-  },
-  badge: {
-    backgroundColor: "blue",
-    marginBottom: 15,
-    marginLeft: 8,
-    marginRight: 27,
-  },
-});
+import { theme } from '../../core/theme';
 
 
 const ListView = ({ elem, index, navigation }) => {
-  let component = "";
   const store = useAuthStore();
 
   return (
     <List.Item
       title={index === 1 ? `최후의 생존자 '${elem.name}' 님` : `'${elem.name}' 님`}
       description={elem.pub_date}
-      left={(props) => {return (index === 1 ? <List.Icon {...props} icon="crown" /> : <Badge style={styles.badge} size={20}>{index}위</Badge>);}}
+
+      left={(props) => {
+        return index === 1 ? (
+        <List.Icon {...props} icon="crown" color={theme.colors.primary} /> 
+        ) : (
+        <Badge style={styles.badge} size={20}>{index}위</Badge>
+        );
+      }}
+
       right={(props) => {
-        if(elem.id !== Number(store.userId)) {
-          return (
+          return elem.id !== Number(store.userId) ? (
             <IconButton
               icon="chat"
-              color={Colors.red500}
+              color={theme.colors.primary}
               size={20}
               onPress={() => {
                 store.setReceiver(elem.id, elem.name);
@@ -53,12 +45,13 @@ const ListView = ({ elem, index, navigation }) => {
                   navigation.navigate("Chat", {
                     screen: "ChatDetail",
                     params: { title: elem.name },
-                  }
-                ));
+                  })
+                );
               }}
-            />)
+            />
+          ):(<></>);
         }
-      }}
+      }
     />
   );
 };
@@ -85,8 +78,6 @@ export const Survivor = ({ navigation }) => {
       getSurvivorList();
       store.setCallback(refreshCallback);
     });
-    //const unsubscribe = 
-    //return unsubscribe;
   }, [navigation]);
 
   return (
@@ -102,3 +93,21 @@ export const Survivor = ({ navigation }) => {
     </List.Section>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: wp("10%"),
+    paddingLeft: wp("10%"),
+    paddingRight: wp("10%"),
+  },
+  badge: {
+    backgroundColor: theme.colors.secondary,
+    marginBottom: 15,
+    marginLeft: 8,
+    marginRight: 27,
+  },
+  icon: {
+    color: theme.colors.primary,
+  }
+});
