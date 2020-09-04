@@ -156,7 +156,7 @@ const AuthProvider = ({ children }) => {
 
     setReceiver: (id, name) => {
       store.receiverId = id;
-      store.receiverId = name;
+      store.receiverName = name;
     }
   }));
 

@@ -28,9 +28,7 @@ const ChatView = ({ receiverName, description, receiverId, sendDate, navigation 
             },
           })
         );
-      }
-        
-      }
+      }}
     />);
 }
 
@@ -42,7 +40,6 @@ export const ChatList = ({ navigation }) => {
     await getChatList(store.userId).then(result => {
       console.log('get chat data >> ', result.data.chatroom_list);
       setChatData(result.data.chatroom_list);
-      forceUpdate();
     })
   }
 
