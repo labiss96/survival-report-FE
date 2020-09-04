@@ -38,87 +38,30 @@ const ListView = ({ elem, index, navigation }) => {
 
   return (
     <List.Item
-            title={`최후의 생존자 '${elem.name}' 님`}
-            description={elem.pub_date}
-            left={(props) => {return (index === 1 ? <List.Icon {...props} icon="crown" /> : <Badge style={styles.badge} size={20}>{index}위</Badge>);}}
-            right={(props) => (
-              <IconButton
-                icon="chat"
-                color={Colors.red500}
-                size={20}
-                onPress={() => {
-                  store.setReceiver(elem.id, elem.name);
-                  return (
-                    navigation.navigate("Chat", {
-                      screen: "ChatDetail",
-                      params: { title: elem.name },
-                    }
-                  ));
-                }}
-              />
-            )}
-          />
+      title={index === 1 ? `최후의 생존자 '${elem.name}' 님` : `'${elem.name}' 님`}
+      description={elem.pub_date}
+      left={(props) => {return (index === 1 ? <List.Icon {...props} icon="crown" /> : <Badge style={styles.badge} size={20}>{index}위</Badge>);}}
+      right={(props) => {
+        if(elem.id !== Number(store.userId)) {
+          return (
+            <IconButton
+              icon="chat"
+              color={Colors.red500}
+              size={20}
+              onPress={() => {
+                store.setReceiver(elem.id, elem.name);
+                return (
+                  navigation.navigate("Chat", {
+                    screen: "ChatDetail",
+                    params: { title: elem.name },
+                  }
+                ));
+              }}
+            />)
+        }
+      }}
+    />
   );
-  //switch (index) {
-  //  case 1:
-  //    component = (
-  //      <>
-  //        <List.Item
-  //          title={`최후의 생존자 '${elem.name}' 님`}
-  //          description={elem.pub_date}
-  //          left={(props) => <List.Icon {...props} icon="crown" />}
-  //          right={(props) => (
-  //            <IconButton
-  //              icon="chat"
-  //              color={Colors.red500}
-  //              size={20}
-  //              onPress={() => {
-  //                store.setReceiver(elem.id, elem.name);
-  //                return (
-  //                  navigation.navigate("Chat", {
-  //                    screen: "ChatDetail",
-  //                    params: { title: elem.name },
-  //                  }
-  //                ));
-  //              }}
-  //            />
-  //          )}
-  //        />
-  //      </>
-  //    );
-  //    break;
-  //  default:
-  //    component = (
-  //      <>
-  //        <List.Item
-  //          title={`'${elem.name}' 님`}
-  //          description={elem.pub_date}
-  //          left={(props) => (
-  //            <Badge style={styles.badge} size={20}>
-  //              {index}위
-  //            </Badge>
-  //          )}
-  //          right={(props) => (
-  //            <IconButton
-  //              icon="chat"
-  //              color={Colors.red500}
-  //              size={20}
-  //              onPress={() => {
-  //                store.setReceiver(elem.id, elem.name);
-  //                return (
-  //                  navigation.navigate("Chat", {
-  //                    screen: "ChatDetail",
-  //                    params: { title: elem.name },
-  //                  }
-  //                ));
-  //              }}
-  //            />
-  //          )}
-  //        />
-  //      </>
-  //    );
-  //}
-  //return component;
 };
 
 export const Survivor = ({ navigation }) => {
