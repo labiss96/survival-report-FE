@@ -54,7 +54,7 @@ const ChatStackScreen = () => (
       name="ChatDetail"
       component={ChatDetail}
       options={({ route, navigation }) => ({
-        title: route.params.receiverName,
+        title: route.params.title,
         headerLeft: () => (
           <IconButton
             icon="keyboard-backspace"

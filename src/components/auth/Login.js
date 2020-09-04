@@ -112,9 +112,9 @@ export const Login = ({ navigation }) => {
       </View>
 
       <Button 
-      style={styles.button}
-      labelStyle={styles.text}
-      mode="contained" onPress={handlingLogin}>
+        style={styles.button}
+        labelStyle={styles.text}
+        mode="contained" onPress={handlingLogin}>
         Login
       </Button>
 
