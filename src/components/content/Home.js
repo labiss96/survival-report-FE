@@ -4,8 +4,10 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Button,
 } from "react-native";
+import { theme } from '../../core/theme';
+import { Button } from "react-native-paper"
+import Background from "../common/Background";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -13,77 +15,86 @@ import {
 
 import { useAuthStore } from "../../store/authContext";
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-    paddingLeft: wp("10%"),
-    paddingRight: wp("10%"),
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  titleArea: {
-    width: "100%",
-    paddingTop: wp("20%"),
-    paddingBottom: wp("20%"),
-    alignItems: "center",
-  },
-  title: {
-    fontSize: wp("8%"),
-  },
-  button: {
-    backgroundColor: "#46c3ad",
-    width: "100%",
-    height: hp("20%"),
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 30,
-  },
-  buttonTitle: {
-    color: "white",
-  },
-});
-
-const ScreenContainer = ({ children }) => (
-  <View style={styles.container}>{children}</View>
-);
-
 export const Home = ({ navigation }) => {
 
   const store = useAuthStore();
-  const [comment, setComment] = useState("");
 
   useEffect(() => {
-    console.log("run useEffect : Home");
     console.log('report state >> ', store.reportFlag)
   });
 
   const reportHandling = () => {
     store.socketReport();
-    //let userId = await AsyncStorage.getItem("userId");
-    //await onCreate({ userId: userId })
-    //  .then((result) => {
-    //    console.log(result);
-    //    alert("생존신고 완료!");
-    //    store.setReport(true);
-    //    store.socketReport();
-    //  })
-    //  .catch((err) => console.log(err));
   };
 
   return (
-    <ScreenContainer>
+    <Background>
+
       <View style={styles.titleArea}>
-        <Text style={styles.title}>생 존 신 고</Text>
+        <Text style={styles.title}>당신이 살아있다는 것을 알리세요!</Text>
       </View>
 
-      <TouchableOpacity
+      <Button
         style={styles.button}
-        onPress={reportHandling}
-      >
-        <Text style={styles.buttonTitle}>생존신고!</Text>
-      </TouchableOpacity>
-      <Button title="Sign Out" onPress={() => store.signOut()} />
-    </ScreenContainer>
+        contentStyle={styles.buttonContent}
+        labelStyle={styles.text}
+        mode="contained" onPress={reportHandling}>
+        생존신고!
+      </Button>
+
+      <View style={styles.signout}>
+        <TouchableOpacity
+          onPress={store.signOut}
+        >
+          <Text style={styles.label}>Sign Out</Text>
+        </TouchableOpacity>
+      </View>
+    </Background>
   );
 };
+
+const styles = StyleSheet.create({
+  header: {
+    fontSize: 26,
+    color: theme.colors.primary,
+    fontWeight: 'bold',
+    paddingVertical: 14,
+  },
+  signout: {
+    width: '100%',
+    alignItems: 'flex-end',
+    marginBottom: 24,
+  },
+  label: {
+    color: theme.colors.secondary,
+  },
+  link: {
+    fontWeight: 'bold',
+    color: theme.colors.primary,
+  },
+  titleArea: {
+    width: "100%",
+    paddingBottom: wp("10%"),
+    alignItems: "center",
+  },
+  title: {
+    fontSize: 20,
+    color: theme.colors.primary,
+    fontWeight: 'bold',
+  },
+  button: {
+    width: '100%',
+    marginVertical: 10,
+    height: 150,
+    borderRadius: 15
+  },
+  buttonContent: {
+    height: 150,
+    borderRadius: 15
+  },
+  text: {
+    fontWeight: 'bold',
+    fontSize: 15,
+    lineHeight: 26,
+  },
+});
