@@ -81,8 +81,8 @@ const AuthProvider = ({ children }) => {
 
     initWebsocket: async (sender_id) => {
 
-      let ws = new WebSocket(`ws://${_URL}ws/chat/${sender_id}`);
-      console.log(`WS server domain : ws://${_URL}ws/chat/${sender_id}`)
+      let ws = new WebSocket(`ws://${_URL}:8088/ws/chat/${sender_id}`);
+      console.log(`WS server domain : ws://${_URL}:8088/ws/chat/${sender_id}`)
       ws = await setupWebsocket(ws);
       console.log('init websocket', ws);
 

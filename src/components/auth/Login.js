@@ -105,7 +105,7 @@ export const Login = ({ navigation }) => {
 
       <View style={styles.forgotPassword}>
         <TouchableOpacity
-          onPress={() => alert('click forgot password!')}
+          onPress={() => alert('\n CONTACT ME! \n \n e-mail :: cxz9080@gmail.com')}
         >
           <Text style={styles.label}>Forgot your password?</Text>
         </TouchableOpacity>
@@ -134,7 +134,6 @@ const styles = StyleSheet.create({
     height: 128,
     marginBottom: 12,
     tintColor: theme.colors.primary,
-
   },
   header: {
     fontSize: 26,

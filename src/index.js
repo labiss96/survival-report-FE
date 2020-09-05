@@ -16,7 +16,7 @@ import { AuthMail } from "./components/auth/AuthMail";
 
 import { Home } from "./components/content/Home";
 import { Survivor } from "./components/content/Survivor";
-import { MyPage } from "./components/content/Mypage";
+import { Profile } from "./components/content/Profile";
 
 import { ChatList } from "./components/content/ChatList";
 import { ChatDetail } from "./components/content/ChatDetail";
@@ -72,11 +72,11 @@ const ChatStackScreen = () => (
         ),
         headerRight: () => (
           <IconButton
-            icon="exit-to-app"
-            color={Colors.red500}
+            icon="information"
+            color={Colors.grey900}
             size={20}
             animated={true}
-            onPress={() => alert("exit chatting room!")}
+            onPress={() => alert("채팅내역은 매일 오전 05시 30분에 초기화됩니다!")}
           />
         ),
       })}
@@ -112,11 +112,10 @@ const TabsScreen = () => {
       }}
     />
     <Tabs.Screen
-      name="MyPage"
-      component={MyPage}
+      name="Profile"
+      component={Profile}
       options={{
-        title: "프로필",
-        tabBarLabel: "My Page",
+        tabBarLabel: "Profile",
         tabBarIcon: ({ color }) => <Icon name="account-circle" color={color} size={26} />,
       }}
     />
